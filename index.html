@@ -4,22 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Aznur Site Studio — local-first architectural site mapping and preliminary analysis using public map data.">
+<meta name="theme-color" content="#fdfcfc">
 <title>Aznur / Site Studio</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <style>
-:root{color-scheme:light dark;--bg:#fdfcfc;--fg:#201d1d;--dim:#646262;--faint:#9a9898;--line:#dcd9d9;--accent:#b45309;--accent-fg:#fdfcfc;--active:#f4f0ef;--surface:#faf8f7;--font:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:4px}
+:root{color-scheme:light dark;--bg:#fdfcfc;--fg:#201d1d;--dim:#646262;--faint:#9a9898;--line:#dcd9d9;--accent:#b45309;--accent-fg:#fdfcfc;--active:#f4f0ef;--surface:#faf8f7;--font:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:var(--font);--mono:var(--font);--radius:4px}
 :root[data-theme="dark"]{color-scheme:dark;--bg:#161313;--fg:#f1eeee;--dim:#9a9898;--faint:#646262;--line:#302c2c;--accent:#f59e0b;--accent-fg:#161313;--active:#211d1d;--surface:#1c1818}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#161313;--fg:#f1eeee;--dim:#9a9898;--faint:#646262;--line:#302c2c;--accent:#f59e0b;--accent-fg:#161313;--active:#211d1d;--surface:#1c1818}}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font:13px/1.5 var(--font)}button,input,select{font:inherit}button{cursor:pointer;color:var(--fg)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}[hidden],.hidden{display:none!important}
-.topbar{height:54px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;border-bottom:1px solid var(--line);background:var(--bg);position:relative;z-index:10}.brand{white-space:nowrap;color:var(--fg);text-decoration:none;font-size:15px;font-weight:600;letter-spacing:-.02em}.brand .slash{color:var(--accent);margin:0 .1em}.top-left,.top-actions{display:flex;align-items:center;gap:10px;min-width:0}.top-actions{justify-content:flex-end}.select,.field{min-height:33px;padding:5px 8px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:var(--radius);min-width:0}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:5px 10px;font-size:11.5px;font-weight:600;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);white-space:nowrap}.btn:hover{border-color:var(--accent)}.btn.accent{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}.btn.danger{border-style:dashed;border-color:var(--accent);color:var(--accent);background:transparent}.btn.sm{min-height:27px;padding:3px 7px;font-size:10.5px}.app{display:grid;grid-template-columns:300px minmax(0,1fr);height:calc(100% - 54px)}.sidebar{border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0;background:var(--bg);overflow:hidden}.side-head{padding:13px 13px 10px;border-bottom:1px solid var(--line)}.eyebrow{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 7px}.side-title{font-size:18px;font-weight:600;letter-spacing:-.035em;margin:0;line-height:1.2}.side-sub{font-size:11px;color:var(--dim);margin:7px 0 0;max-width:260px}.search-wrap{display:flex;align-items:center;gap:7px;margin-top:12px;padding:4px 7px;min-height:36px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}.search-wrap:focus-within{border-color:var(--accent)}.search-wrap .prompt{color:var(--accent);font-weight:600}.search-wrap input{flex:1;width:0;min-width:0;padding:0;background:transparent;border:0;color:var(--fg);font:inherit}.search-wrap input:focus-visible{outline:0}.search-wrap kbd,kbd{font:inherit;font-size:10px;padding:1px 5px;border:1px solid var(--line);border-radius:3px;background:var(--active);color:var(--dim)}.side-tabs{display:flex;border-bottom:1px solid var(--line);padding:0 9px;gap:5px}.tab{min-height:39px;flex:1;background:transparent;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;font-size:11px;color:var(--dim)}.tab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}.side-content{overflow:auto;padding:12px;flex:1;min-height:0}.section{margin-bottom:17px}.section-title{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.11em;font-weight:600;margin:0 0 8px}.card{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:10px;margin-bottom:9px}.card.accent-top{border-top:2px solid var(--accent)}.row{display:flex;align-items:center;gap:8px}.row.between{justify-content:space-between}.row.wrap{flex-wrap:wrap}.row>*{min-width:0}.muted{color:var(--dim)}.small{font-size:11px}.tiny{font-size:10px;color:var(--dim)}.field-label{display:block;font-size:10px;letter-spacing:.05em;color:var(--dim);text-transform:uppercase;margin-bottom:4px}.field{width:100%}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}.check-row{display:flex;align-items:center;gap:8px;min-height:29px;color:var(--fg);font-size:11.5px;cursor:pointer}.check-row input{accent-color:var(--accent);width:14px;height:14px}.check-row .label-sub{margin-left:auto;color:var(--faint);font-size:10px}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.result{background:var(--active);border:1px solid var(--line);border-radius:3px;padding:8px;min-width:0}.result .r-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);font-weight:600}.result .r-value{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:3px;overflow-wrap:anywhere}.result.accent{border-color:var(--accent)}.result.accent .r-value{color:var(--accent)}.warning{background:var(--active);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:3px;padding:7px 8px;color:var(--dim);font-size:10.5px;margin-top:8px}.warning:before{content:'[!] ';color:var(--accent);font-weight:600}.metric-list{display:grid;gap:6px}.metric{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:5px;font-size:11px}.metric:last-child{border:0;padding-bottom:0}.metric strong{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}.side-footer{padding:9px 12px;border-top:1px solid var(--line);font-size:10px;color:var(--dim);display:flex;justify-content:space-between;gap:8px}.workspace{position:relative;min-width:0;min-height:0;background:var(--active)}#map{position:absolute;inset:0;background:var(--active)}.maplibregl-ctrl-group{border:1px solid var(--line)!important;border-radius:4px!important;box-shadow:none!important;overflow:hidden}.maplibregl-ctrl-group button{background:var(--bg)!important}.maplibregl-ctrl-attrib{font:9px var(--font)!important;background:var(--bg)!important;color:var(--dim)!important}.maplibregl-ctrl-attrib a{color:var(--dim)!important}.maplibregl-ctrl-bottom-right{right:4px!important;bottom:4px!important}.map-toolbar{position:absolute;top:12px;left:12px;right:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;pointer-events:none;z-index:4}.tool-group{pointer-events:auto;display:flex;align-items:center;gap:4px;flex-wrap:wrap;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:4px}.tool-group .btn{min-height:29px;padding:3px 8px}.map-label{pointer-events:none;margin:5px 0 0 auto;max-width:300px;text-align:right;font-size:10px;color:var(--dim);background:var(--bg);border:1px solid var(--line);padding:5px 8px;border-radius:3px}.map-status{position:absolute;bottom:16px;left:12px;background:var(--bg);border:1px solid var(--line);padding:7px 9px;font-size:10px;color:var(--dim);z-index:4;max-width:min(480px,calc(100% - 24px));pointer-events:none}.map-status b{color:var(--fg);font-weight:600}.draw-hint{position:absolute;top:63px;left:50%;transform:translateX(-50%);background:var(--bg);border:1px solid var(--accent);padding:7px 10px;z-index:5;font-size:11px;max-width:90%;text-align:center}.legend{position:absolute;right:12px;bottom:48px;background:var(--bg);border:1px solid var(--line);padding:8px 10px;z-index:3;width:155px;font-size:10px}.legend-title{font-weight:600;margin-bottom:6px}.legend-line{display:flex;align-items:center;gap:7px;margin:4px 0;color:var(--dim)}.swatch{width:13px;height:9px;border:1px solid var(--line);display:inline-block}.status-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;display:inline-block;margin-right:5px}.toast-host{position:fixed;top:64px;right:12px;display:flex;flex-direction:column;gap:6px;width:min(340px,calc(100vw - 24px));z-index:99;pointer-events:none}.toast{pointer-events:auto;display:flex;gap:7px;padding:8px 10px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:4px;font-size:11px}.toast-mark{color:var(--accent);font-weight:600}.height-ramp{height:8px;border:1px solid var(--line);margin:7px 0 3px;background:linear-gradient(90deg,var(--active),#9a9898,var(--accent))}.text-link{color:var(--fg);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}.text-link:hover{text-decoration-color:var(--accent)}
-@media(max-width:900px){.app{grid-template-columns:260px minmax(0,1fr)}.map-label{display:none}}
-@media(max-width:680px){.topbar{padding:0 9px;height:50px}.top-actions{gap:5px}.top-actions .hide-mobile{display:none}.topbar .select{max-width:115px;min-height:30px}.app{height:calc(100% - 50px);display:flex;flex-direction:column}.workspace{order:1;flex:1;min-height:45%}.sidebar{order:2;height:47%;border-right:0;border-top:1px solid var(--line)}.side-head{padding:8px 10px}.side-title{font-size:15px}.side-sub{display:none}.search-wrap{margin-top:7px;min-height:31px}.side-tabs{padding:0 6px}.tab{min-height:32px}.side-content{padding:8px 10px}.side-footer{display:none}.map-toolbar{top:7px;left:7px;right:7px}.tool-group{padding:3px}.tool-group .btn{min-height:27px;padding:2px 6px;font-size:10px}.map-status{bottom:7px;left:7px}.legend{right:7px;bottom:36px}.draw-hint{top:47px}.toast-host{top:55px}}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font:13px/1.5 var(--font)}button,input,select{font:inherit}button{cursor:pointer;color:var(--fg)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px} [hidden],.hidden{display:none!important}
+.topbar{height:54px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;border-bottom:1px solid var(--line);background:var(--bg);position:relative;z-index:10}.brand{white-space:nowrap;color:var(--fg);text-decoration:none;font-size:15px;font-weight:600;letter-spacing:-.02em}.brand .slash{color:var(--accent);margin:0 .1em}.top-meta{font-size:10px;color:var(--dim);letter-spacing:.09em;text-transform:uppercase;margin-left:13px}.top-left,.top-actions{display:flex;align-items:center;gap:10px;min-width:0}.top-actions{justify-content:flex-end}.select,.field{min-height:33px;padding:5px 8px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:var(--radius);min-width:0}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:5px 10px;font-size:11.5px;font-weight:600;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);white-space:nowrap}.btn:hover{border-color:var(--accent)}.btn.accent{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}.btn.danger{border-style:dashed;border-color:var(--accent);color:var(--accent);background:transparent}.btn.sm{min-height:27px;padding:3px 7px;font-size:10.5px}.app{display:grid;grid-template-columns:300px minmax(0,1fr);height:calc(100% - 54px)}.sidebar{border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0;background:var(--bg);overflow:hidden}.side-head{padding:13px 13px 10px;border-bottom:1px solid var(--line)}.eyebrow{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 7px}.side-title{font-size:18px;font-weight:600;letter-spacing:-.035em;margin:0;line-height:1.2}.side-sub{font-size:11px;color:var(--dim);margin:7px 0 0;max-width:260px}.search-wrap{display:flex;align-items:center;gap:7px;margin-top:12px;padding:4px 7px;min-height:36px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}.search-wrap:focus-within{border-color:var(--accent)}.search-wrap .prompt{color:var(--accent);font-weight:600}.search-wrap input{flex:1;width:0;min-width:0;padding:0;background:transparent;border:0;color:var(--fg);font:inherit}.search-wrap input:focus-visible{outline:0}.search-wrap kbd,kbd{font:inherit;font-size:10px;padding:1px 5px;border:1px solid var(--line);border-radius:3px;background:var(--active);color:var(--dim)}.side-tabs{display:flex;border-bottom:1px solid var(--line);padding:0 9px;gap:5px}.tab{min-height:39px;flex:1;background:transparent;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;font-size:11px;color:var(--dim)}.tab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}.side-content{overflow:auto;padding:12px;flex:1;min-height:0}.section{margin-bottom:17px}.section-title{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.11em;font-weight:600;margin:0 0 8px}.card{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:10px;margin-bottom:9px}.card.accent-top{border-top:2px solid var(--accent)}.row{display:flex;align-items:center;gap:8px}.row.between{justify-content:space-between}.row.wrap{flex-wrap:wrap}.row>*{min-width:0}.muted{color:var(--dim)}.small{font-size:11px}.tiny{font-size:10px;color:var(--dim)}.field-label{display:block;font-size:10px;letter-spacing:.05em;color:var(--dim);text-transform:uppercase;margin-bottom:4px}.field{width:100%}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}.check-row{display:flex;align-items:center;gap:8px;min-height:29px;color:var(--fg);font-size:11.5px;cursor:pointer}.check-row input{accent-color:var(--accent);width:14px;height:14px}.check-row .label-sub{margin-left:auto;color:var(--faint);font-size:10px}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.result{background:var(--active);border:1px solid var(--line);border-radius:3px;padding:8px;min-width:0}.result .r-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);font-weight:600}.result .r-value{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:3px;overflow-wrap:anywhere}.result.accent{border-color:var(--accent)}.result.accent .r-value{color:var(--accent)}.warning{background:var(--active);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:3px;padding:7px 8px;color:var(--dim);font-size:10.5px;margin-top:8px}.warning:before{content:'[!] ';color:var(--accent);font-weight:600}.metric-list{display:grid;gap:6px}.metric{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:5px;font-size:11px}.metric:last-child{border:0;padding-bottom:0}.metric strong{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}.side-footer{padding:9px 12px;border-top:1px solid var(--line);font-size:10px;color:var(--dim);display:flex;justify-content:space-between;gap:8px}.workspace{position:relative;min-width:0;min-height:0;background:var(--active)}#map{position:absolute;inset:0;background:var(--active)}.maplibregl-ctrl-group{border:1px solid var(--line)!important;border-radius:4px!important;box-shadow:none!important;overflow:hidden}.maplibregl-ctrl-group button{background:var(--bg)!important}.maplibregl-ctrl-attrib{font:9px var(--font)!important;background:var(--bg)!important;color:var(--dim)!important}.maplibregl-ctrl-attrib a{color:var(--dim)!important}.maplibregl-ctrl-bottom-right{right:4px!important;bottom:4px!important}.map-toolbar{position:absolute;top:12px;left:12px;right:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;pointer-events:none;z-index:4}.tool-group{pointer-events:auto;display:flex;align-items:center;gap:4px;flex-wrap:wrap;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:4px}.tool-group .btn{min-height:29px;padding:3px 8px}.map-label{pointer-events:none;margin:5px 0 0 auto;max-width:300px;text-align:right;font-size:10px;color:var(--dim);background:var(--bg);border:1px solid var(--line);padding:5px 8px;border-radius:3px}.map-status{position:absolute;bottom:16px;left:12px;background:var(--bg);border:1px solid var(--line);padding:7px 9px;font-size:10px;color:var(--dim);z-index:4;max-width:min(480px,calc(100% - 24px));pointer-events:none}.map-status b{color:var(--fg);font-weight:600}.draw-hint{position:absolute;top:63px;left:50%;transform:translateX(-50%);background:var(--bg);border:1px solid var(--accent);padding:7px 10px;z-index:5;font-size:11px;max-width:90%;text-align:center}.legend{position:absolute;right:12px;bottom:48px;background:var(--bg);border:1px solid var(--line);padding:8px 10px;z-index:3;width:155px;font-size:10px}.legend-title{font-weight:600;margin-bottom:6px}.legend-line{display:flex;align-items:center;gap:7px;margin:4px 0;color:var(--dim)}.swatch{width:13px;height:9px;border:1px solid var(--line);display:inline-block}.status-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;display:inline-block;margin-right:5px}.toast-host{position:fixed;top:64px;right:12px;display:flex;flex-direction:column;gap:6px;width:min(340px,calc(100vw - 24px));z-index:99;pointer-events:none}.toast{pointer-events:auto;display:flex;gap:7px;padding:8px 10px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:4px;font-size:11px}.toast-mark{color:var(--accent);font-weight:600}.empty{border:1px dashed var(--line);padding:14px;text-align:center;color:var(--dim);font-size:11px}.height-ramp{height:8px;border:1px solid var(--line);margin:7px 0 3px;background:linear-gradient(90deg,var(--active),#9a9898,var(--accent))}.diag-list{display:grid;gap:8px;margin-top:8px}.diag-row{display:grid;grid-template-columns:minmax(70px,1fr) minmax(55px,1.8fr) auto;gap:7px;align-items:center;font-size:10.5px}.diag-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.diag-track{height:8px;border:1px solid var(--line);background:var(--active);overflow:hidden}.diag-fill{height:100%;background:var(--accent)}.building-area{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:7px 0}.area-chip{border:1px solid var(--line);padding:7px;background:var(--active);min-width:0}.area-chip strong{display:block;font-size:14px;overflow-wrap:anywhere}.area-chip span{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}.footer-links{display:flex;gap:8px;align-items:center}.text-link{color:var(--fg);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}.text-link:hover{text-decoration-color:var(--accent)}.bottom-mobile{display:none}
+@media(max-width:900px){.app{grid-template-columns:260px minmax(0,1fr)}.top-meta{display:none}.map-label{display:none}}
+@media(max-width:680px){.topbar{padding:0 9px;height:50px}.top-actions{gap:5px}.top-actions .hide-mobile{display:none}.topbar .select{max-width:115px;min-height:30px}.app{height:calc(100% - 50px);display:flex;flex-direction:column}.workspace{order:1;flex:1;min-height:45%;}.sidebar{order:2;height:47%;border-right:0;border-top:1px solid var(--line);}.side-head{padding:8px 10px}.side-title{font-size:15px}.side-sub{display:none}.search-wrap{margin-top:7px;min-height:31px}.side-tabs{padding:0 6px}.tab{min-height:32px}.side-content{padding:8px 10px}.side-footer{display:none}.map-toolbar{top:7px;left:7px;right:7px}.tool-group{padding:3px}.tool-group .btn{min-height:27px;padding:2px 6px;font-size:10px}.map-status{bottom:7px;left:7px}.legend{right:7px;bottom:36px}.draw-hint{top:47px}.toast-host{top:55px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <header class="topbar">
-  <div class="top-left"><a class="brand" href="#" aria-label="Aznur Site Studio home">aznur<span class="slash">/</span>site-studio</a></div>
+  <div class="top-left"><a class="brand" href="#" aria-label="Aznur Site Studio home">aznur<span class="slash">/</span>site-studio</a><span class="top-meta">architectural context · 0.1</span></div>
   <div class="top-actions">
     <label class="tiny" for="themeSelect">Theme</label>
     <select id="themeSelect" class="select" aria-label="Choose theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
@@ -30,7 +31,7 @@
 <main class="app">
   <aside class="sidebar" aria-label="Site analysis controls">
     <div class="side-head">
-      <p class="eyebrow">Project workspace</p><h1 class="side-title">Site analysis<br>studio.</h1>
+      <p class="eyebrow">Fig 01. Project workspace</p><h1 class="side-title">Site analysis<br>studio.</h1>
       <p class="side-sub">Map real-world context, inspect mapped buildings and assemble a preliminary site study.</p>
       <label class="search-wrap" for="placeSearch"><span class="prompt">&gt;</span><input id="placeSearch" type="search" placeholder="Search a place or address…" autocomplete="off"><kbd>/</kbd><button id="searchGo" class="btn sm" type="button" aria-label="Search location">Go</button></label>
     </div>
@@ -56,6 +57,8 @@
             <div class="result"><div class="r-label">Footprint area</div><div class="r-value" id="statFootprint">—</div></div>
             <div class="result"><div class="r-label">Green / water</div><div class="r-value" id="statGreen">—</div></div>
             <div class="result"><div class="r-label">Building coverage*</div><div class="r-value" id="statCoverage">—</div></div>
+            <div class="result"><div class="r-label">Avg. footprint</div><div class="r-value" id="statAverageBuilding">—</div></div>
+            <div class="result"><div class="r-label">Known gross floor area</div><div class="r-value" id="statFloorArea">—</div></div>
           </div>
           <p class="tiny">*Preliminary estimate from mapped features; see data caveat below.</p>
         </div>
@@ -78,7 +81,11 @@
         </div>
         <div class="section">
           <p class="section-title">Selected building</p>
-          <div class="card" id="buildingCard"><div class="muted small">Click a mapped building footprint to inspect its available OSM tags.</div></div>
+          <div class="card" id="buildingCard"><div class="muted small">Click a mapped building footprint to inspect its footprint area in square metres and square feet.</div></div>
+        </div>
+        <div class="section">
+          <p class="section-title">Building-use diagram</p>
+          <div class="card"><div class="tiny">Top use categories in the loaded study radius, ranked by building count.</div><div id="useDiagram" class="diag-list"><div class="muted small">Load building context to create this diagram.</div></div></div>
         </div>
         <div class="warning">Public map data can be incomplete or outdated. Coverage and land-area values are approximate, not surveyed measurements or regulatory advice.</div>
       </section>
@@ -87,6 +94,7 @@
           <label class="check-row"><input id="showBuildings" type="checkbox" checked> Building footprints <span class="label-sub">OSM</span></label>
           <label class="check-row"><input id="show3d" type="checkbox"> 3D building extrusion <span class="label-sub">height</span></label>
           <label class="check-row"><input id="showGreen" type="checkbox" checked> Green / land cover <span class="label-sub">OSM</span></label>
+          <label class="check-row"><input id="showTrees" type="checkbox" checked> Individual trees / tree rows <span class="label-sub">OSM</span></label>
           <label class="check-row"><input id="showWater" type="checkbox" checked> Water features <span class="label-sub">OSM</span></label>
           <label class="check-row"><input id="showRoads" type="checkbox" checked> Road network <span class="label-sub">OSM</span></label>
           <label class="check-row"><input id="showShadowLayer" type="checkbox" checked> Sun / shadow guide <span class="label-sub">model</span></label>
@@ -94,6 +102,9 @@
         </div></div>
         <div class="section"><p class="section-title">Map appearance</p><div class="card">
           <label class="field-label" for="basemapSelect">Basemap style</label><select id="basemapSelect" class="field"><option value="https://tiles.openfreemap.org/styles/positron">Light — quiet context</option><option value="https://tiles.openfreemap.org/styles/liberty">Liberty — detailed labels</option><option value="https://tiles.openfreemap.org/styles/bright">Bright — higher contrast</option></select>
+          <label class="field-label" for="buildingColorMode" style="margin-top:10px">Building theme</label><select id="buildingColorMode" class="field"><option value="height">Height</option><option value="footprint">Footprint area</option><option value="levels">Floor count</option><option value="use">Building use</option></select>
+          <label class="field-label" for="minBuildingArea" style="margin-top:10px">Minimum footprint area (m²)</label><input id="minBuildingArea" class="field" type="number" min="0" max="100000" step="10" value="0">
+          <p class="tiny" style="margin:5px 0 0">Filters displayed buildings only. Missing use/level tags remain unknown in the dataset.</p>
           <div class="form-grid" style="margin-top:9px"><label><span class="field-label">Building opacity</span><input id="buildingOpacity" class="field" type="range" min="25" max="100" value="88" style="padding:0"></label><label><span class="field-label">Context opacity</span><input id="contextOpacity" class="field" type="range" min="20" max="100" value="70" style="padding:0"></label></div>
         </div></div>
         <div class="section"><p class="section-title">Building height legend</p><div class="card"><div class="height-ramp"></div><div class="row between tiny"><span>Low</span><span>High</span></div><p class="tiny" style="margin:8px 0 0">Height values use OSM <code>height</code>, then <code>building:levels × 3 m</code>, then a default 9 m. Missing values are estimates.</p></div></div>
@@ -102,7 +113,7 @@
         <div class="section"><p class="section-title">Site boundary</p><div class="card accent-top">
           <p class="small muted" style="margin:0 0 9px">Draw a custom site polygon on the map. Click points in sequence, then finish to estimate area.</p>
           <div class="row wrap"><button class="btn accent" id="drawBoundaryBtn">＋ Draw boundary</button><button class="btn" id="finishBoundaryBtn" disabled>Finish</button><button class="btn danger" id="clearBoundaryBtn">Clear</button></div>
-          <div class="result-grid"><div class="result"><div class="r-label">Boundary area</div><div class="r-value" id="boundaryArea">—</div></div><div class="result"><div class="r-label">Perimeter</div><div class="r-value" id="boundaryPerimeter">—</div></div></div>
+          <div class="result-grid"><div class="result"><div class="r-label">Boundary area</div><div class="r-value" id="boundaryArea">—</div></div><div class="result"><div class="r-label">Boundary area (ft²)</div><div class="r-value" id="boundaryAreaSqft">—</div></div><div class="result"><div class="r-label">Perimeter</div><div class="r-value" id="boundaryPerimeter">—</div></div></div>
           <p id="boundaryStatus" class="tiny" aria-live="polite" style="margin:8px 0 0">No site boundary yet.</p>
         </div></div>
         <div class="section"><p class="section-title">Workspace</p><div class="card">
@@ -111,10 +122,10 @@
           <p class="tiny" style="margin:8px 0 0">Saved settings stay in this browser profile. Download a JSON project file for a portable backup.</p>
         </div></div>
         <div class="section"><p class="section-title">Export options</p><div class="card">
-          <div class="row wrap"><button class="btn full" id="exportPngBtn">Export current map as PNG</button><button class="btn full" id="exportSvgBtn">Export context diagram as SVG</button><button class="btn full" id="exportGeoBtn">Export map data as GeoJSON</button><button class="btn full" id="exportProjectBtn">Download project JSON</button><button class="btn full" id="importProjectBtn">Import project JSON</button><input type="file" id="importFile" accept="application/json,.json" hidden></div>
+          <div class="row wrap"><button class="btn full" id="exportPngBtn">Export current map as PNG</button><button class="btn full" id="exportSvgBtn">Export context diagram as SVG</button><button class="btn full" id="exportGeoBtn">Export map data as GeoJSON</button><button class="btn full" id="exportBuildingsCsvBtn">Export building areas as CSV</button><button class="btn full" id="exportProjectBtn">Download project JSON</button><button class="btn full" id="importProjectBtn">Import project JSON</button><input type="file" id="importFile" accept="application/json,.json" hidden></div>
           <p class="tiny" style="margin:8px 0 0">PNG export may be blocked by a third-party map tile's browser security settings. SVG is a simplified 2D context diagram, not a CAD drawing.</p>
         </div></div>
-        <div class="section"><p class="section-title">Sources and privacy</p><div class="card small muted">Map tiles: OpenFreeMap. Place search and architectural context: OpenStreetMap contributors / public Nominatim and Overpass endpoints. The HTML has no app backend or account system. Searches and map requests go to those external services.</div></div>
+        <div class="section"><p class="section-title">Sources and privacy</p><div class="card small muted">Map tiles: OpenFreeMap. Place search and context: OpenStreetMap contributors via public Nominatim / Overpass endpoints. Buildings, trees and tags are only as complete as public OSM data. Calculated footprint area is approximate; indoor floor area is not the same thing. The HTML has no app backend or account system.</div></div>
       </section>
     </div>
     <div class="side-footer"><span><span class="status-dot"></span><span id="connectionStatus">Map engine starting</span></span><span>local-first UI</span></div>
@@ -123,7 +134,7 @@
     <div id="map" role="application" aria-label="Interactive site map"></div>
     <div class="map-toolbar">
       <div class="tool-group"><button class="btn" id="resetViewBtn" title="Return to study location">⌂ Reset</button><button class="btn" id="zoomInBtn" aria-label="Zoom in">＋</button><button class="btn" id="zoomOutBtn" aria-label="Zoom out">−</button><button class="btn" id="refreshDataBtn">↻ Refresh data</button></div>
-      <div class="map-label" id="mapLabel">Dhaka · 23.8103° N, 90.4125° E</div>
+      <div class="map-label" id="mapLabel">DHaka · 23.8103° N, 90.4125° E</div>
     </div>
     <div id="drawHint" class="draw-hint" hidden>Click map to add boundary points · Finish when you have 3 or more points.</div>
     <div class="legend" id="mapLegend"><div class="legend-title">MAP KEY</div><div class="legend-line"><span class="swatch" style="background:#d6cfc5"></span>Mapped buildings</div><div class="legend-line"><span class="swatch" style="background:#a5b59b"></span>Green / land cover</div><div class="legend-line"><span class="swatch" style="background:#a6c3d3"></span>Water features</div><div class="legend-line"><span class="swatch" style="background:#b45309"></span>Site / sun guide</div></div>
@@ -137,16 +148,17 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const STORE_KEY = 'aznur.site-studio.v1';
-  const THEME_KEY = 'aznur-index-theme';
   const initialCenter = [90.4125, 23.8103];
   let map = null, mapReady = false, drawing = false, drawPoints = [], boundary = null;
   let activeStyleUrl = 'https://tiles.openfreemap.org/styles/positron';
-  let buildings = [], greens = [], waters = [], roads = [], selectedBuilding = null, mapHome = {center: initialCenter, zoom: 13};
+  let buildings = [], greens = [], waters = [], roads = [], trees = [], selectedBuilding = null, mapHome = {center: initialCenter, zoom: 13};
   let lastAnalysis = null;
   const EMPTY = {type:'FeatureCollection',features:[]};
   const toasts = $('toasts');
   const number = n => Number.isFinite(n) ? new Intl.NumberFormat('en', {maximumFractionDigits:0}).format(n) : '—';
   const fmtArea = m2 => !Number.isFinite(m2) ? '—' : m2 >= 1e6 ? (m2/1e6).toFixed(2)+' km²' : m2 >= 1e4 ? (m2/1e4).toFixed(2)+' ha' : number(m2)+' m²';
+  const fmtSqft = m2 => Number.isFinite(m2) && m2 >= 0 ? number(m2 * 10.7639104167) + ' ft²' : '—';
+  const fmtM2Exact = m2 => Number.isFinite(m2) && m2 >= 0 ? number(m2) + ' m²' : '—';
   const fmtLength = m => !Number.isFinite(m) ? '—' : m >= 1000 ? (m/1000).toFixed(2)+' km' : number(m)+' m';
   function toast(message, kind='ok') {
     const el = document.createElement('div'); el.className='toast';
@@ -157,10 +169,10 @@
   function setMapStatus(lead, rest='') { $('mapStatus').innerHTML=''; const b=document.createElement('b'); b.textContent=lead; $('mapStatus').append(b, document.createTextNode(rest ? ' '+rest : '')); }
   function setDataStatus(s) { $('dataStatus').textContent=s; }
   function setTheme(value) {
-    if (value==='system') document.documentElement.removeAttribute('data-theme');
+    if (value==='system') { document.documentElement.removeAttribute('data-theme'); }
     else document.documentElement.setAttribute('data-theme',value);
     $('themeSelect').value=value;
-    try { localStorage.setItem(THEME_KEY,value); } catch (_) {}
+    try { localStorage.setItem('aznur.site-studio.theme',value); } catch (_) {}
   }
   function haversine(a,b) { const R=6371008.8, rad=Math.PI/180, p1=a[1]*rad,p2=b[1]*rad,dp=(b[1]-a[1])*rad,dl=(b[0]-a[0])*rad; const x=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2; return 2*R*Math.asin(Math.min(1,Math.sqrt(x))); }
   function ringArea(coords) {
@@ -173,16 +185,26 @@
   function centroid(geom) { let pts=[]; const rec=x=>{if(typeof x?.[0]==='number'&&typeof x?.[1]==='number')pts.push(x);else if(Array.isArray(x))x.forEach(rec);}; rec(geom.coordinates); if(!pts.length)return null; return [pts.reduce((s,p)=>s+p[0],0)/pts.length,pts.reduce((s,p)=>s+p[1],0)/pts.length]; }
   function inRadius(feature, center, radius) { const c=centroid(feature.geometry); return !!c && haversine(center,c)<=radius; }
   function geoFeature(el, category) {
-    if(!el.geometry || !el.geometry.length) return null;
-    const coords=el.geometry.map(p=>[p.lon,p.lat]); const closed=coords.length>3 && coords[0][0]===coords[coords.length-1][0] && coords[0][1]===coords[coords.length-1][1];
-    const tags=el.tags||{}; let geometry;
-    if(category==='road' || (category==='water' && tags.waterway && !closed)) { geometry={type:'LineString',coordinates:coords}; }
-    else if(closed) { geometry={type:'Polygon',coordinates:[coords]}; }
-    else return null;
-    const floors=parseFloat(tags['building:levels']); const rawHeight=parseFloat(String(tags.height||'').replace(/m$/i,''));
-    const height=Number.isFinite(rawHeight)&&rawHeight>0?rawHeight:(Number.isFinite(floors)&&floors>0?floors*3:9);
-    const use=tags.building==='yes'?(tags.amenity||tags.shop||tags.office||tags.tourism||'building'):tags.building;
-    return {type:'Feature',id:`${el.type}/${el.id}`,properties:{osmId:el.id,osmType:el.type,category,name:tags.name||'',building:tags.building||'',height,levels:Number.isFinite(floors)?floors:null,use:String(use||''),landuse:tags.landuse||'',leisure:tags.leisure||'',natural:tags.natural||'',waterway:tags.waterway||'',highway:tags.highway||'',surface:tags.surface||'',rawTags:tags},geometry};
+    const tags=el.tags||{};
+    let geometry, coords=[];
+    if(category==='tree' && el.type==='node' && Number.isFinite(el.lon) && Number.isFinite(el.lat)) { geometry={type:'Point',coordinates:[el.lon,el.lat]}; }
+    else {
+      if(!el.geometry || !el.geometry.length) return null;
+      coords=el.geometry.map(p=>[p.lon,p.lat]); const closed=coords.length>3 && coords[0][0]===coords[coords.length-1][0] && coords[0][1]===coords[coords.length-1][1];
+      if(category==='road' || (category==='water' && tags.waterway && !closed)) geometry={type:'LineString',coordinates:coords};
+      else if(closed) geometry={type:'Polygon',coordinates:[coords]};
+      else if(category==='tree' && tags.natural==='tree_row') geometry={type:'LineString',coordinates:coords};
+      else return null;
+    }
+    const floors=parseFloat(tags['building:levels']);
+    const heightText=String(tags.height||'').trim();
+    let rawHeight=parseFloat(heightText.replace(/(meters?|metres?|m|feet|foot|ft|')$/i,'').trim());
+    if(Number.isFinite(rawHeight) && /(?:feet|foot|ft|')$/i.test(heightText)) rawHeight*=0.3048;
+    const measuredHeight=Number.isFinite(rawHeight)&&rawHeight>0?rawHeight:null;
+    const height=measuredHeight??(Number.isFinite(floors)&&floors>0?floors*3:9);
+    const use=tags.building==='yes'?(tags.amenity||tags.shop||tags.office||tags.tourism||tags['building:use']||'building'):tags.building;
+    const footprintM2=category==='building'&&geometry.type==='Polygon'?polygonArea(geometry):null;
+    return {type:'Feature',id:`${el.type}/${el.id}`,properties:{osmId:el.id,osmType:el.type,category,name:tags.name||'',building:tags.building||'',height,heightSource:measuredHeight?'OSM height tag':(Number.isFinite(floors)&&floors>0?'derived from tagged levels':'default estimate'),heightIsEstimate:!measuredHeight,levels:Number.isFinite(floors)&&floors>0?floors:null,levelsSource:Number.isFinite(floors)&&floors>0?'OSM building:levels tag':'not tagged',use:String(use||''),landuse:tags.landuse||'',leisure:tags.leisure||'',natural:tags.natural||'',waterway:tags.waterway||'',highway:tags.highway||'',surface:tags.surface||'',footprintM2,rawTags:tags},geometry};
   }
   function paintSource(id, data) { if(map && map.getSource(id)) map.getSource(id).setData(data||EMPTY); }
   function setVisibility(layer, visible) { if(map && map.getLayer(layer)) map.setLayoutProperty(layer,'visibility',visible?'visible':'none'); }
@@ -191,6 +213,7 @@
     paintSource('green-data',{type:'FeatureCollection',features:greens});
     paintSource('water-data',{type:'FeatureCollection',features:waters});
     paintSource('roads-data',{type:'FeatureCollection',features:roads});
+    paintSource('trees-data',{type:'FeatureCollection',features:trees});
     paintSource('boundary-data',boundary||EMPTY);
     paintSource('draw-data',drawFeatureCollection());
     paintSource('selected-data',selectedBuilding?{type:'FeatureCollection',features:[selectedBuilding]}:EMPTY);
@@ -209,12 +232,28 @@
     setVisibility('water-polygons',$('showWater').checked);
     setVisibility('water-lines',$('showWater').checked);
     setVisibility('road-lines',$('showRoads').checked);
+    setVisibility('tree-points',$('showTrees').checked);
+    setVisibility('tree-rows',$('showTrees').checked);
     setVisibility('shadow-line',$('showShadowLayer').checked && $('showShadow').checked);
+    const colorExpr=buildingColorExpression();
+    if(map?.getLayer('building-footprints')) map.setPaintProperty('building-footprints','fill-color',colorExpr);
+    if(map?.getLayer('building-extrusion')) map.setPaintProperty('building-extrusion','fill-extrusion-color',colorExpr);
+    const minArea=Math.max(0,Number($('minBuildingArea').value)||0);
+    const buildingFilter=['>=',['coalesce',['get','footprintM2'],0],minArea];
+    if(map?.getLayer('building-footprints')) map.setFilter('building-footprints',buildingFilter);
+    if(map?.getLayer('building-extrusion')) map.setFilter('building-extrusion',buildingFilter);
     const op=Number($('buildingOpacity').value)/100;
     if(map?.getLayer('building-footprints')) map.setPaintProperty('building-footprints','fill-opacity',op);
     if(map?.getLayer('building-extrusion')) map.setPaintProperty('building-extrusion','fill-extrusion-opacity',op);
     const cop=Number($('contextOpacity').value)/100;
     for(const l of ['green-polygons','water-polygons']) if(map?.getLayer(l)) map.setPaintProperty(l,'fill-opacity',cop); if(map?.getLayer('water-lines')) map.setPaintProperty('water-lines','line-opacity',cop);
+  }
+  function buildingColorExpression() {
+    const mode=$('buildingColorMode')?.value||'height';
+    if(mode==='footprint') return ['interpolate',['linear'],['coalesce',['get','footprintM2'],0],0,'#f1e8dc',50,'#e6c9a7',250,'#c7894d',1000,'#b45309',5000,'#7c3b12'];
+    if(mode==='levels') return ['interpolate',['linear'],['coalesce',['get','levels'],1],1,'#f1e8dc',3,'#e6c9a7',6,'#c7894d',12,'#b45309',25,'#7c3b12'];
+    if(mode==='use') return ['match',['coalesce',['get','use'],'unknown'],'residential','#d9c4a8','house','#c4a783','apartments','#bd8c5c','commercial','#b45309','industrial','#80664f','retail','#d8a56d','office','#9f7650','yes','#b9afa4','building','#b9afa4','#ded8cf'];
+    return ['interpolate',['linear'],['coalesce',['get','height'],9],0,'#f1e8dc',10,'#e0c9ad',30,'#bc8c5c',80,'#8a5b30',150,'#623b1d'];
   }
   function addSourceLayer() {
     map.addSource('buildings-data',{type:'geojson',data:EMPTY});
@@ -228,6 +267,9 @@
     map.addLayer({id:'water-lines',type:'line',source:'water-data',filter:['==',['geometry-type'],'LineString'],paint:{'line-color':'#7fa8bc','line-width':['interpolate',['linear'],['zoom'],10,1,15,3,18,5],'line-opacity':.9}});
     map.addSource('roads-data',{type:'geojson',data:EMPTY});
     map.addLayer({id:'road-lines',type:'line',source:'roads-data',paint:{'line-color':'#b7a58c','line-width':['interpolate',['linear'],['zoom'],10,.5,15,2,18,4],'line-opacity':.85}});
+    map.addSource('trees-data',{type:'geojson',data:EMPTY});
+    map.addLayer({id:'tree-points',type:'circle',source:'trees-data',filter:['==',['geometry-type'],'Point'],paint:{'circle-radius':['interpolate',['linear'],['zoom'],11,1.5,16,4,19,6],'circle-color':'#74825e','circle-stroke-color':'#fdfcfc','circle-stroke-width':.7}});
+    map.addLayer({id:'tree-rows',type:'line',source:'trees-data',filter:['==',['geometry-type'],'LineString'],paint:{'line-color':'#74825e','line-width':2}});
     map.addSource('boundary-data',{type:'geojson',data:EMPTY});
     map.addLayer({id:'boundary-fill',type:'fill',source:'boundary-data',paint:{'fill-color':'#b45309','fill-opacity':.08}});
     map.addLayer({id:'boundary-outline',type:'line',source:'boundary-data',paint:{'line-color':'#b45309','line-width':2.5,'line-dasharray':[2,1]}});
@@ -243,7 +285,7 @@
   function initMap() {
     if(!window.maplibregl) { $('connectionStatus').textContent='Map library unavailable'; setMapStatus('Unable to load map library.','Check your internet connection and reload.'); toast('MapLibre could not load. Check the network and reload.','err'); return; }
     try {
-      map = new maplibregl.Map({container:'map',style:$('basemapSelect').value,center:initialCenter,zoom:13,attributionControl:true,preserveDrawingBuffer:true,renderWorldCopies:false});
+      map = new maplibregl.Map({container:'map',style:$('basemapSelect').value,center:initialCenter,zoom:13,attributionControl:true,preserveDrawingBuffer:true,doubleClickZoom:true,renderWorldCopies:false});
       map.addControl(new maplibregl.NavigationControl({showCompass:true,visualizePitch:true}),'bottom-right');
       map.addControl(new maplibregl.ScaleControl({maxWidth:120,unit:'metric'}),'bottom-left');
       map.on('load',()=>{mapReady=true; activeStyleUrl=$('basemapSelect').value; addSourceLayer(); $('connectionStatus').textContent='Map engine ready'; setMapStatus('Ready.','Search or pan to your site, then load context data.'); updateMapLabel(); computeSun();});
@@ -278,30 +320,67 @@
     const areaDeg=(b.n-b.s)*(b.e-b.w); if(areaDeg>.001) {toast('Study area is too large for a single public query. Reduce the radius.','warn');return;}
     $('analyzeBtn').disabled=true;$('refreshDataBtn').disabled=true; setDataStatus('Requesting OSM data…');setMapStatus('Loading context.','Fetching public OpenStreetMap features for the current area.');$('connectionStatus').textContent='Fetching OSM data';
     const bbox=`${b.s.toFixed(6)},${b.w.toFixed(6)},${b.n.toFixed(6)},${b.e.toFixed(6)}`;
-    const query=`[out:json][timeout:35];(way["building"](${bbox});way["leisure"~"park|garden|nature_reserve|playground|pitch"](${bbox});way["landuse"~"grass|forest|meadow|recreation_ground|village_green|allotments"](${bbox});way["natural"~"water|wood|wetland"](${bbox});way["waterway"~"riverbank|canal|river|stream"](${bbox});way["highway"~"motorway|trunk|primary|secondary|tertiary|unclassified|residential|living_street|service|pedestrian|footway|cycleway"](${bbox}););out geom;`;
+    const query=`[out:json][timeout:35];(way["building"](${bbox});way["leisure"~"park|garden|nature_reserve|playground|pitch"](${bbox});way["landuse"~"grass|forest|meadow|recreation_ground|village_green|allotments"](${bbox});way["natural"~"water|wood|wetland"](${bbox});way["waterway"~"riverbank|canal|river|stream"](${bbox});way["highway"~"motorway|trunk|primary|secondary|tertiary|unclassified|residential|living_street|service|pedestrian|footway|cycleway"](${bbox});node["natural"="tree"](${bbox});way["natural"="tree_row"](${bbox}););out geom;`;
     try {
-      const els=await requestOverpass(query); const bs=[],gs=[],ws=[],rs=[]; const ids=new Set();
-      for(const el of els) {const t=el.tags||{};let cat=null;if(t.building)cat='building';else if(t.highway)cat='road';else if(t.natural==='water'||t.natural==='wetland'||t.waterway||t.landuse==='reservoir')cat='water';else if(t.leisure||t.landuse||t.natural==='wood')cat='green';else continue; const f=geoFeature(el,cat);if(!f||ids.has(f.id))continue;ids.add(f.id);if(cat==='building')bs.push(f);else if(cat==='green')gs.push(f);else if(cat==='water')ws.push(f);else rs.push(f);}
-      buildings=bs;greens=gs;waters=ws;roads=rs;selectedBuilding=null;updateDataSources();computeStats(center,radius);
-      lastAnalysis={center,radius,loadedAt:new Date().toISOString(),counts:{buildings:bs.length,green:gs.length,water:ws.length,roads:rs.length}};
-      const total=bs.length+gs.length+ws.length+rs.length;setDataStatus(`${number(total)} mapped features loaded · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`);$('connectionStatus').textContent='OSM data loaded';setMapStatus('Context loaded.',`${bs.length} buildings · ${gs.length} green areas · ${ws.length} water features · ${rs.length} road segments.`);toast(`Loaded ${number(total)} OpenStreetMap features.`);computeSun();
+      const els=await requestOverpass(query); const bs=[],gs=[],ws=[],rs=[],ts=[]; const ids=new Set();
+      for(const el of els) {const t=el.tags||{};let cat=null;if(t.building)cat='building';else if(t.natural==='tree'||t.natural==='tree_row')cat='tree';else if(t.highway)cat='road';else if(t.natural==='water'||t.natural==='wetland'||t.waterway||t.landuse==='reservoir')cat='water';else if(t.leisure||t.landuse||t.natural==='wood')cat='green';else continue; const f=geoFeature(el,cat);if(!f||ids.has(f.id))continue;ids.add(f.id);if(cat==='building')bs.push(f);else if(cat==='green')gs.push(f);else if(cat==='water')ws.push(f);else if(cat==='tree')ts.push(f);else rs.push(f);}
+      buildings=bs;greens=gs;waters=ws;roads=rs;trees=ts;selectedBuilding=null;updateDataSources();computeStats(center,radius);
+      lastAnalysis={center,radius,loadedAt:new Date().toISOString(),counts:{buildings:bs.length,green:gs.length,water:ws.length,roads:rs.length,trees:ts.length}};
+      const total=bs.length+gs.length+ws.length+rs.length+ts.length;setDataStatus(`${number(total)} mapped features loaded · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`);$('connectionStatus').textContent='OSM data loaded';setMapStatus('Context loaded.',`${bs.length} buildings · ${gs.length} green areas · ${ws.length} water features · ${rs.length} road segments · ${ts.length} tree features.`);toast(`Loaded ${number(total)} OpenStreetMap features.`);computeSun();
     } catch(e) {setDataStatus('Could not load public map data.');setMapStatus('OSM request failed.',e.message||'Try again later.');$('connectionStatus').textContent='OSM request failed';toast('Could not load OSM context: '+(e.message||'network error'),'err');}
     finally {$('analyzeBtn').disabled=false;$('refreshDataBtn').disabled=false;}
   }
+  function buildingAreaM2(feature) {
+    const cached=Number(feature?.properties?.footprintM2);
+    return Number.isFinite(cached)&&cached>=0?cached:polygonArea(feature?.geometry);
+  }
+  function grossFloorAreaM2(feature) {
+    const p=feature?.properties||{}, footprint=buildingAreaM2(feature);
+    let floors=Number(p.levels), source='tagged levels';
+    if(!(Number.isFinite(floors)&&floors>0)) {
+      const taggedHeight=Number(p.height);
+      if(p.heightSource==='OSM height tag'&&Number.isFinite(taggedHeight)&&taggedHeight>0) {floors=Math.max(1,Math.round(taggedHeight/3));source='estimated from tagged height at 3 m/floor';}
+      else return {area:null,floors:null,source:'not enough source data'};
+    }
+    return {area:footprint*floors,floors,source};
+  }
   function computeStats(center,radius) {
     const bs=buildings.filter(f=>inRadius(f,center,radius)); const gs=greens.filter(f=>inRadius(f,center,radius)); const ws=waters.filter(f=>inRadius(f,center,radius));
-    const footprint=bs.reduce((s,f)=>s+polygonArea(f.geometry),0), green=gs.reduce((s,f)=>s+polygonArea(f.geometry),0)+ws.reduce((s,f)=>s+polygonArea(f.geometry),0), study=Math.PI*radius*radius;
+    const areas=bs.map(buildingAreaM2), footprint=areas.reduce((s,a)=>s+a,0), green=gs.reduce((s,f)=>s+polygonArea(f.geometry),0)+ws.reduce((s,f)=>s+polygonArea(f.geometry),0), study=Math.PI*radius*radius;
+    const knownGfa=bs.map(grossFloorAreaM2).filter(x=>Number.isFinite(x.area)).reduce((s,x)=>s+x.area,0);
     $('statBuildings').textContent=number(bs.length); $('statFootprint').textContent=fmtArea(footprint); $('statGreen').textContent=fmtArea(green); $('statCoverage').textContent=study>0?(footprint/study*100).toFixed(1)+'%':'—';
+    $('statAverageBuilding').textContent=bs.length?fmtArea(footprint/bs.length):'—'; $('statFloorArea').textContent=knownGfa?fmtArea(knownGfa):'—';
+    updateBuildingDiagram(bs);
+  }
+  function updateBuildingDiagram(list=buildings) {
+    const root=$('useDiagram'); if(!root)return; root.replaceChildren();
+    if(!list.length){const d=document.createElement('div');d.className='muted small';d.textContent='No building data in the current radius. Load context or move the map and refresh.';root.append(d);return;}
+    const counts=new Map(); for(const f of list){const raw=String(f.properties?.use||f.properties?.building||'Unknown').trim();const key=raw&&raw!=='yes'?' '+raw.trim():'Unknown';counts.set(key,(counts.get(key)||0)+1);}
+    const rows=[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,7), max=rows[0]?.[1]||1;
+    rows.forEach(([label,count])=>{const row=document.createElement('div');row.className='diag-row';const name=document.createElement('div');name.className='diag-name';name.textContent=label.trim()||'Unknown';name.title=name.textContent;const track=document.createElement('div');track.className='diag-track';const fill=document.createElement('div');fill.className='diag-fill';fill.style.width=(count/max*100).toFixed(1)+'%';track.append(fill);const value=document.createElement('strong');value.textContent=number(count);row.append(name,track,value);root.append(row);});
+    const note=document.createElement('div');note.className='tiny';note.textContent=`${number(list.length)} buildings · ${counts.size} tagged/use groups. Missing and generic OSM tags are shown as Unknown.`;root.append(note);
   }
   function inspectBuilding(point) {
-    if(!map) return; const hits=map.queryRenderedFeatures(point,{layers:['building-footprints','building-extrusion']}); const f=hits.find(x=>x.properties&&x.properties.osmId);
-    if(!f){selectedBuilding=null;paintSource('selected-data',EMPTY);$('buildingCard').innerHTML='<div class="muted small">Click a mapped building footprint to inspect its available OSM tags.</div>';return;}
-    selectedBuilding=buildings.find(b=>String(b.properties.osmId)===String(f.properties.osmId))||{type:'Feature',properties:f.properties,geometry:f.geometry};paintSource('selected-data',{type:'FeatureCollection',features:[selectedBuilding]});
-    const p=selectedBuilding.properties; $('buildingCard').innerHTML=''; const name=document.createElement('div');name.style.fontWeight='600';name.style.marginBottom='8px';name.textContent=p.name||`Building ${p.osmId}`;$('buildingCard').append(name);
-    const pairs=[['OSM ID',p.osmId],['Type',p.building||'not tagged'],['Height',p.height?`${p.height} m (estimated if untagged)`:'not mapped'],['Levels',p.levels??'not mapped'],['Use',p.use||'not tagged']];
-    pairs.forEach(([k,v])=>{const row=document.createElement('div');row.className='metric';const a=document.createElement('span');a.className='muted';a.textContent=k;const b=document.createElement('strong');b.textContent=String(v);row.append(a,b);$('buildingCard').append(row);});
+    if(!map) return;
+    let hits=[]; try { hits=map.queryRenderedFeatures(point,{layers:['building-footprints','building-extrusion']}); } catch(_) {}
+    const f=hits.find(x=>x.properties&&x.properties.osmId);
+    if(!f){selectedBuilding=null;paintSource('selected-data',EMPTY);$('buildingCard').innerHTML='<div class="muted small">Click a building footprint. Area is calculated from its mapped outline.</div>';return;}
+    selectedBuilding=buildings.find(b=>String(b.properties.osmId)===String(f.properties.osmId))||{type:'Feature',properties:f.properties,geometry:f.geometry}; paintSource('selected-data',{type:'FeatureCollection',features:[selectedBuilding]});
+    const p=selectedBuilding.properties, tags=p.rawTags||{}, area=buildingAreaM2(selectedBuilding), gfa=grossFloorAreaM2(selectedBuilding);
+    $('buildingCard').replaceChildren();
+    const name=document.createElement('div');name.style.fontWeight='600';name.style.marginBottom='6px';name.textContent=p.name||`Building ${p.osmId}`;$('buildingCard').append(name);
+    const areaGrid=document.createElement('div');areaGrid.className='building-area';
+    for(const [label,value] of [['Footprint · square metres',fmtM2Exact(area)],['Footprint · square feet',fmtSqft(area)]]){const chip=document.createElement('div');chip.className='area-chip';const strong=document.createElement('strong');strong.textContent=value;const span=document.createElement('span');span.textContent=label;chip.append(strong,span);areaGrid.append(chip);}
+    $('buildingCard').append(areaGrid);
+    const gfaHeading=document.createElement('div');gfaHeading.className='small';gfaHeading.style.fontWeight='600';gfaHeading.style.margin='8px 0 5px';gfaHeading.textContent='Estimated gross floor area';$('buildingCard').append(gfaHeading);
+    for(const [k,v] of [['Floor-area estimate',Number.isFinite(gfa.area)?fmtM2Exact(gfa.area)+' / '+fmtSqft(gfa.area):'Not enough tagged height/level data'],['Floor count used',gfa.floors?`${gfa.floors} ${gfa.source==='tagged levels'?'tagged':'estimated'} floors`:'not available']]) appendMetric($('buildingCard'),k,v);
+    const rows=[['OSM ID',p.osmId],['Building type',p.building||'not tagged'],['Footprint source','Calculated from mapped outline'],['Height',p.height?`${number(p.height)} m`:'not mapped'],['Height source',p.heightSource||'not recorded'],['Levels',p.levels??'not mapped'],['Use',p.use||'not tagged'],['Address',[tags['addr:housenumber'],tags['addr:street'],tags['addr:suburb'],tags['addr:city']].filter(Boolean).join(', ')||'not tagged'],['Material',tags['building:material']||tags.material||'not tagged'],['Year built',tags.start_date||tags['building:year']||'not tagged'],['Roof',tags['roof:shape']||tags['roof:material']||'not tagged'],['Geometry',selectedBuilding.geometry?.type||'not available']];
+    rows.forEach(([k,v])=>appendMetric($('buildingCard'),k,v));
+    const note=document.createElement('p');note.className='tiny';note.style.margin='8px 0 0';note.textContent='Footprint is a plan-area calculation from the OSM polygon, not verified indoor floor space. Gross floor area multiplies footprint by tagged levels, or by an estimated floor count from an explicitly tagged height at 3 m/floor. Verify for design, valuation or permits.';$('buildingCard').append(note);
     const link=document.createElement('a');link.className='text-link small';link.target='_blank';link.rel='noopener';link.href=`https://www.openstreetmap.org/${p.osmType||'way'}/${p.osmId}`;link.textContent='Open object in OpenStreetMap ↗';link.style.display='inline-block';link.style.marginTop='9px';$('buildingCard').append(link);
+    switchPanel('analysisPanel');
   }
+  function appendMetric(parent,k,v) {const row=document.createElement('div');row.className='metric';const a=document.createElement('span');a.className='muted';a.textContent=k;const b=document.createElement('strong');b.textContent=String(v??'not tagged');row.append(a,b);parent.append(row);}
   function sunPosition(date,time,lat,lon) {
     const [hh,mm]=time.split(':').map(Number); const y=date.getFullYear(),m=date.getMonth()+1,d=date.getDate(); let N=Math.floor((Date.UTC(y,m-1,d)-Date.UTC(y,0,0))/86400000);
     const gamma=2*Math.PI/365*(N-1+(hh-12)/24);
@@ -323,23 +402,30 @@
   function finishBoundary() {
     if(drawPoints.length<3){toast('Add at least three points before finishing.','warn');return;}
     const coords=drawPoints.slice();coords.push(coords[0]);boundary={type:'FeatureCollection',features:[{type:'Feature',properties:{name:$('projectName').value||'Study boundary'},geometry:{type:'Polygon',coordinates:[coords]}}]};
-    toggleDrawing(false);$('boundaryArea').textContent=fmtArea(ringArea(coords.slice(0,-1)));let per=0;for(let i=1;i<coords.length;i++)per+=haversine(coords[i-1],coords[i]);$('boundaryPerimeter').textContent=fmtLength(per);$('boundaryStatus').textContent=`Boundary completed · ${drawPoints.length} vertices.`;updateDataSources();toast('Site boundary created.');
+    toggleDrawing(false);$('boundaryArea').textContent=fmtArea(ringArea(coords.slice(0,-1)));$('boundaryAreaSqft').textContent=fmtSqft(ringArea(coords.slice(0,-1)));let per=0;for(let i=1;i<coords.length;i++)per+=haversine(coords[i-1],coords[i]);$('boundaryPerimeter').textContent=fmtLength(per);$('boundaryStatus').textContent=`Boundary completed · ${drawPoints.length} vertices.`;updateDataSources();toast('Site boundary created.');
   }
-  function clearBoundary() { drawing=false;drawPoints=[];boundary=null;toggleDrawing(false);updateDataSources();$('boundaryArea').textContent='—';$('boundaryPerimeter').textContent='—';$('boundaryStatus').textContent='No site boundary yet.';$('finishBoundaryBtn').disabled=true; }
+  function clearBoundary() { drawing=false;drawPoints=[];boundary=null;toggleDrawing(false);updateDataSources();$('boundaryArea').textContent='—';$('boundaryAreaSqft').textContent='—';$('boundaryPerimeter').textContent='—';$('boundaryStatus').textContent='No site boundary yet.';$('finishBoundaryBtn').disabled=true; }
   function downloadBlob(blob,filename) {const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);}
   function filename(ext) {const n=($('projectName').value||'site-study').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'site-study';return n+'.'+ext;}
-  function buildProject() { return {app:'Aznur Site Studio',version:1,projectName:$('projectName').value,createdAt:new Date().toISOString(),view:map?{center:map.getCenter().toArray(),zoom:map.getZoom(),pitch:map.getPitch(),bearing:map.getBearing()}:mapHome,settings:{radius:Number($('radiusSelect').value),basemap:$('basemapSelect').value,showBuildings:$('showBuildings').checked,show3d:$('show3d').checked,showGreen:$('showGreen').checked,showWater:$('showWater').checked,showRoads:$('showRoads').checked,showShadow:$('showShadow').checked,showShadowLayer:$('showShadowLayer').checked,sunDate:$('sunDate').value,sunTime:$('sunTime').value,obstacleHeight:Number($('obstacleHeight').value)},boundary:boundary||null,data:{buildings,greens,waters,roads},analysis:lastAnalysis}; }
+  function buildProject() { return {app:'Aznur Site Studio',version:1,projectName:$('projectName').value,createdAt:new Date().toISOString(),view:map?{center:map.getCenter().toArray(),zoom:map.getZoom(),pitch:map.getPitch(),bearing:map.getBearing()}:mapHome,settings:{radius:Number($('radiusSelect').value),basemap:$('basemapSelect').value,showBuildings:$('showBuildings').checked,show3d:$('show3d').checked,showGreen:$('showGreen').checked,showTrees:$('showTrees').checked,showWater:$('showWater').checked,showRoads:$('showRoads').checked,buildingColorMode:$('buildingColorMode').value,minBuildingArea:Number($('minBuildingArea').value)||0,showShadow:$('showShadow').checked,showShadowLayer:$('showShadowLayer').checked,sunDate:$('sunDate').value,sunTime:$('sunTime').value,obstacleHeight:Number($('obstacleHeight').value)},boundary:boundary||null,data:{buildings,greens,waters,roads,trees},analysis:lastAnalysis}; }
   function saveLocal() {try {localStorage.setItem(STORE_KEY,JSON.stringify(buildProject()));toast('Project settings saved in this browser.');}catch(e){toast('Could not save locally: '+e.message,'err');}}
   function applyProject(p,includeData=true) { if(!p||p.app!=='Aznur Site Studio')throw new Error('This file is not an Aznur Site Studio project.'); $('projectName').value=p.projectName||'Untitled site study'; const s=p.settings||{};
-    if(s.radius)$('radiusSelect').value=String(s.radius);if(s.basemap)$('basemapSelect').value=s.basemap;
-    for(const k of ['showBuildings','show3d','showGreen','showWater','showRoads','showShadow','showShadowLayer'])if(typeof s[k]==='boolean')$(k).checked=s[k];if(s.sunDate)$('sunDate').value=s.sunDate;if(s.sunTime)$('sunTime').value=s.sunTime;if(s.obstacleHeight)$('obstacleHeight').value=s.obstacleHeight;
+    if(s.radius)$('radiusSelect').value=String(s.radius);if(s.basemap)$('basemapSelect').value=s.basemap;if(s.buildingColorMode)$('buildingColorMode').value=s.buildingColorMode;if(Number.isFinite(s.minBuildingArea))$('minBuildingArea').value=s.minBuildingArea;
+    for(const k of ['showBuildings','show3d','showGreen','showTrees','showWater','showRoads','showShadow','showShadowLayer'])if(typeof s[k]==='boolean')$(k).checked=s[k];if(s.sunDate)$('sunDate').value=s.sunDate;if(s.sunTime)$('sunTime').value=s.sunTime;if(s.obstacleHeight)$('obstacleHeight').value=s.obstacleHeight;
     if(p.view&&map){map.jumpTo({center:p.view.center||initialCenter,zoom:p.view.zoom||13,pitch:p.view.pitch||0,bearing:p.view.bearing||0});mapHome={center:p.view.center||initialCenter,zoom:p.view.zoom||13};}
-    if(includeData&&p.data){buildings=Array.isArray(p.data.buildings)?p.data.buildings:[];greens=Array.isArray(p.data.greens)?p.data.greens:[];waters=Array.isArray(p.data.waters)?p.data.waters:[];roads=Array.isArray(p.data.roads)?p.data.roads:[];}
-    boundary=p.boundary||null;const geom=boundary?.features?.[0]?.geometry;if(geom?.type==='Polygon'){const c=geom.coordinates[0];$('boundaryArea').textContent=fmtArea(ringArea(c.slice(0,-1)));let per=0;for(let i=1;i<c.length;i++)per+=haversine(c[i-1],c[i]);$('boundaryPerimeter').textContent=fmtLength(per);$('boundaryStatus').textContent='Boundary restored.';} else {$('boundaryArea').textContent='—';$('boundaryPerimeter').textContent='—';$('boundaryStatus').textContent='No site boundary yet.';}
+    if(includeData&&p.data){buildings=Array.isArray(p.data.buildings)?p.data.buildings:[];greens=Array.isArray(p.data.greens)?p.data.greens:[];waters=Array.isArray(p.data.waters)?p.data.waters:[];roads=Array.isArray(p.data.roads)?p.data.roads:[];trees=Array.isArray(p.data.trees)?p.data.trees:[];buildings.forEach(f=>{if(f?.properties&&!Number.isFinite(f.properties.footprintM2)&&f.geometry?.type)f.properties.footprintM2=polygonArea(f.geometry);});}
+    boundary=p.boundary||null;const geom=boundary?.features?.[0]?.geometry;if(geom?.type==='Polygon'){const c=geom.coordinates[0];$('boundaryArea').textContent=fmtArea(ringArea(c.slice(0,-1)));$('boundaryAreaSqft').textContent=fmtSqft(ringArea(c.slice(0,-1)));let per=0;for(let i=1;i<c.length;i++)per+=haversine(c[i-1],c[i]);$('boundaryPerimeter').textContent=fmtLength(per);$('boundaryStatus').textContent='Boundary restored.';} else {$('boundaryArea').textContent='—';$('boundaryPerimeter').textContent='—';$('boundaryStatus').textContent='No site boundary yet.';}
     if(mapReady) {if(s.basemap && s.basemap!==activeStyleUrl){try{activeStyleUrl=s.basemap;map.setStyle(s.basemap);map.once('style.load',()=>{if(!map.getSource('buildings-data'))addSourceLayer();updateDataSources();computeSun();});}catch(_){}}else{updateDataSources();}if(lastAnalysis)computeStats(lastAnalysis.center,lastAnalysis.radius);else computeStats(map.getCenter().toArray(),Number($('radiusSelect').value));computeSun();}
   }
+  function exportBuildingsCsv() {
+    if(!buildings.length){toast('Load building context before exporting building areas.','warn');return;}
+    const headers=['osm_type','osm_id','name','building_type','use','footprint_m2','footprint_sqft','tagged_levels','height_m','height_source','estimated_gross_floor_area_m2','estimated_gross_floor_area_sqft','floor_area_method','address'];
+    const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+    const rows=buildings.map(f=>{const p=f.properties||{},tags=p.rawTags||{},a=buildingAreaM2(f),g=grossFloorAreaM2(f);return [p.osmType,p.osmId,p.name,p.building,p.use,Number.isFinite(a)?a.toFixed(2):'',Number.isFinite(a)?(a*10.7639104167).toFixed(2):'',p.levels??'',p.height??'',p.heightSource,Number.isFinite(g.area)?g.area.toFixed(2):'',Number.isFinite(g.area)?(g.area*10.7639104167).toFixed(2):'',g.source,[tags['addr:housenumber'],tags['addr:street'],tags['addr:suburb'],tags['addr:city']].filter(Boolean).join(', ')];});
+    const csv='\ufeff'+[headers,...rows].map(r=>r.map(quote).join(',')).join('\r\n');downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),filename('csv'));toast(`Exported ${number(rows.length)} building records to CSV.`);
+  }
   function exportProject() {downloadBlob(new Blob([JSON.stringify(buildProject(),null,2)],{type:'application/json'}),filename('json'));toast('Project JSON exported.');}
-  function exportGeoJSON() {const fc={type:'FeatureCollection',name:$('projectName').value,features:[...buildings,...greens,...waters,...roads,...(boundary?.features||[])]};downloadBlob(new Blob([JSON.stringify(fc)],{type:'application/geo+json'}),filename('geojson'));toast('GeoJSON exported.');}
+  function exportGeoJSON() {const fc={type:'FeatureCollection',name:$('projectName').value,features:[...buildings,...greens,...waters,...roads,...trees,...(boundary?.features||[])]};downloadBlob(new Blob([JSON.stringify(fc)],{type:'application/geo+json'}),filename('geojson'));toast('GeoJSON exported.');}
   function exportPng() {try {map.triggerRepaint();const canvas=map.getCanvas();canvas.toBlob(blob=>{if(!blob){toast('The browser could not render a PNG export.','err');return;}downloadBlob(blob,filename('png'));toast('Map PNG exported.');},'image/png');}catch(e){toast('PNG export blocked by browser canvas security. Try SVG or GeoJSON.','err');}}
   function exportSvg() {
     const features=[...greens,...waters,...roads,...buildings,...(boundary?.features||[])]; if(!features.length){toast('Load map context or draw a boundary before exporting a diagram.','warn');return;}
@@ -352,23 +438,23 @@
   }
   function escXml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));}
   function resetMap() {if(!map)return;const target=lastAnalysis?.center||mapHome.center||initialCenter;map.flyTo({center:target,zoom:mapHome.zoom||13,pitch:$('show3d').checked?50:0,bearing:0,duration:500});}
-  function clearData() {buildings=[];greens=[];waters=[];roads=[];selectedBuilding=null;lastAnalysis=null;updateDataSources();['statBuildings','statFootprint','statGreen','statCoverage'].forEach(id=>$(id).textContent='—');$('buildingCard').innerHTML='<div class="muted small">Click a mapped building footprint to inspect its available OSM tags.</div>';$('connectionStatus').textContent='Map engine ready';setDataStatus('Downloaded context cleared.');setMapStatus('Context cleared.','Load OSM data again when you are ready.');toast('Downloaded map context cleared.');}
+  function clearData() {buildings=[];greens=[];waters=[];roads=[];trees=[];selectedBuilding=null;lastAnalysis=null;updateDataSources();['statBuildings','statFootprint','statGreen','statCoverage','statAverageBuilding','statFloorArea'].forEach(id=>$(id).textContent='—');$('buildingCard').innerHTML='<div class="muted small">Click a mapped building footprint to inspect its area in square metres and square feet.</div>';updateBuildingDiagram([]);$('connectionStatus').textContent='Map engine ready';setDataStatus('Downloaded context cleared.');setMapStatus('Context cleared.','Load OSM data again when you are ready.');toast('Downloaded map context cleared.');}
   function setupEvents() {
     document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>switchPanel(t.dataset.panel)));
     $('themeSelect').addEventListener('change',e=>setTheme(e.target.value));$('searchGo').addEventListener('click',searchPlace);$('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchPlace();}});
     $('analyzeBtn').addEventListener('click',loadContext);$('refreshDataBtn').addEventListener('click',loadContext);$('locateBtn').addEventListener('click',()=>{if(!navigator.geolocation){toast('Geolocation is not available in this browser.','err');return;}navigator.geolocation.getCurrentPosition(pos=>{const center=[pos.coords.longitude,pos.coords.latitude];mapHome={center,zoom:16};map.flyTo({center,zoom:16});setMapStatus('Location found.','Your browser supplied the location.');toast('Map centred on your location.');},e=>toast('Location unavailable: '+e.message,'err'),{enableHighAccuracy:false,timeout:10000});});
     $('resetViewBtn').addEventListener('click',resetMap);$('zoomInBtn').addEventListener('click',()=>map?.zoomIn());$('zoomOutBtn').addEventListener('click',()=>map?.zoomOut());
-    ['showBuildings','show3d','showGreen','showWater','showRoads','showShadow','showShadowLayer'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='show3d'&&mapReady)map.easeTo({pitch:$('show3d').checked?50:0,duration:350});applyLayerStates();computeSun();}));
-    $('buildingOpacity').addEventListener('input',applyLayerStates);$('contextOpacity').addEventListener('input',applyLayerStates);
+    ['showBuildings','show3d','showGreen','showTrees','showWater','showRoads','showShadow','showShadowLayer'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='show3d'&&mapReady)map.easeTo({pitch:$('show3d').checked?50:0,duration:350});applyLayerStates();computeSun();}));
+    $('buildingOpacity').addEventListener('input',applyLayerStates);$('contextOpacity').addEventListener('input',applyLayerStates);$('buildingColorMode').addEventListener('change',applyLayerStates);$('minBuildingArea').addEventListener('input',applyLayerStates);
     $('basemapSelect').addEventListener('change',e=>{if(!mapReady)return;activeStyleUrl=e.target.value;map.setStyle(activeStyleUrl);map.once('style.load',()=>{if(!map.getSource('buildings-data'))addSourceLayer();updateDataSources();computeSun();});});
     ['sunDate','sunTime','obstacleHeight'].forEach(id=>$(id).addEventListener('change',computeSun));$('drawBoundaryBtn').addEventListener('click',()=>{if(!drawing){drawPoints=[];toggleDrawing(true);}else toggleDrawing(false);});$('finishBoundaryBtn').addEventListener('click',finishBoundary);$('clearBoundaryBtn').addEventListener('click',clearBoundary);
     $('saveBtn').addEventListener('click',saveLocal);$('saveLocalBtn').addEventListener('click',saveLocal);$('loadLocalBtn').addEventListener('click',()=>{try{const raw=localStorage.getItem(STORE_KEY);if(!raw)throw new Error('No local project has been saved in this browser.');applyProject(JSON.parse(raw),true);toast('Saved project restored.');}catch(e){toast(e.message,'err');}});
-    $('exportBtn').addEventListener('click',()=>{switchPanel('projectPanel');toast('Choose an export format in the Project panel.');});$('exportPngBtn').addEventListener('click',exportPng);$('exportSvgBtn').addEventListener('click',exportSvg);$('exportGeoBtn').addEventListener('click',exportGeoJSON);$('exportProjectBtn').addEventListener('click',exportProject);$('importProjectBtn').addEventListener('click',()=>$('importFile').click());
+    $('exportBtn').addEventListener('click',()=>{switchPanel('projectPanel');toast('Choose an export format in the Project panel.');});$('exportPngBtn').addEventListener('click',exportPng);$('exportSvgBtn').addEventListener('click',exportSvg);$('exportGeoBtn').addEventListener('click',exportGeoJSON);$('exportBuildingsCsvBtn').addEventListener('click',exportBuildingsCsv);$('exportProjectBtn').addEventListener('click',exportProject);$('importProjectBtn').addEventListener('click',()=>$('importFile').click());
     $('importFile').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const p=JSON.parse(await f.text());applyProject(p,true);saveLocal();toast('Project file imported.');}catch(err){toast('Project import failed: '+err.message,'err');}finally{e.target.value='';}});$('clearDataBtn').addEventListener('click',clearData);
     window.addEventListener('keydown',e=>{const target=e.target,typing=target&&(target.tagName==='INPUT'||target.tagName==='TEXTAREA'||target.tagName==='SELECT'||target.isContentEditable);if(e.key==='/'&&!typing){e.preventDefault();$('placeSearch').focus();}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('placeSearch').focus();}if(e.key==='Escape'&&drawing)toggleDrawing(false);if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();saveLocal();}});
   }
   function init() {
-    try {const saved=localStorage.getItem(THEME_KEY);setTheme(saved||'system');}catch(_){setTheme('system');}
+    try {const saved=localStorage.getItem('aznur.site-studio.theme');setTheme(saved||'system');}catch(_){setTheme('system');}
     const now=new Date();$('sunDate').value=now.toISOString().slice(0,10);setupEvents();initMap();
     $('mapLabel').textContent=`${initialCenter[1].toFixed(4)}° N, ${initialCenter[0].toFixed(4)}° E · Dhaka (initial view)`;
     try {const raw=localStorage.getItem(STORE_KEY);if(raw){const p=JSON.parse(raw);if(p?.app==='Aznur Site Studio'){$('projectName').value=p.projectName||'Untitled site study';}}}catch(_){}
