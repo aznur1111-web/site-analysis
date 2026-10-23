@@ -20,7 +20,7 @@
 </head>
 <body>
 <header class="topbar">
-  <div class="top-left"><a class="brand" href="#" aria-label="Aznur Site Studio home">aznur<span class="slash">/</span>site-studio</a><span class="top-meta">architectural context · 0.1</span></div>
+  <div class="top-left"><a class="brand" href="#" aria-label="Aznur Site Studio home">aznur<span class="slash">/</span>site-studio</a><span class="top-meta">architectural context · 0.2</span></div>
   <div class="top-actions">
     <label class="tiny" for="themeSelect">Theme</label>
     <select id="themeSelect" class="select" aria-label="Choose theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
@@ -62,6 +62,24 @@
           </div>
           <p class="tiny">*Preliminary estimate from mapped features; see data caveat below.</p>
         </div>
+
+        <!-- NEW: Site metrics against drawn boundary -->
+        <div class="section">
+          <p class="section-title">Site metrics · drawn boundary</p>
+          <div class="card accent-top">
+            <p class="tiny" style="margin:0 0 8px">Draw a site boundary in the Project panel. Metrics below use only buildings whose centroid falls inside that polygon.</p>
+            <div class="result-grid">
+              <div class="result"><div class="r-label">Site area</div><div class="r-value" id="siteAreaMetric">—</div></div>
+              <div class="result"><div class="r-label">Building footprint</div><div class="r-value" id="siteFootprintMetric">—</div></div>
+              <div class="result accent"><div class="r-label">Site coverage</div><div class="r-value" id="siteCoverageMetric">—</div></div>
+              <div class="result accent"><div class="r-label">FAR (approx.)</div><div class="r-value" id="siteFarMetric">—</div></div>
+              <div class="result"><div class="r-label">Estimated GFA</div><div class="r-value" id="siteGfaMetric">—</div></div>
+              <div class="result"><div class="r-label">Buildings inside</div><div class="r-value" id="siteCountMetric">—</div></div>
+            </div>
+            <p class="tiny" style="margin:8px 0 0">FAR = estimated gross floor area ÷ site area. GFA uses tagged levels or tagged height ÷ 3 m; untagged buildings are omitted from GFA but included in footprint.</p>
+          </div>
+        </div>
+
         <div class="section">
           <p class="section-title">Sun position · approximate</p>
           <div class="card">
@@ -71,14 +89,34 @@
               <label><span class="field-label">Obstacle height (m)</span><input class="field" type="number" id="obstacleHeight" min="1" max="300" value="15"></label>
               <label class="check-row" style="align-self:end"><input type="checkbox" id="showShadow" checked> Show shadow direction</label>
             </div>
+            <!-- NEW: shadow projection toggle -->
+            <label class="check-row" style="margin-top:6px"><input type="checkbox" id="showShadowProjection"> Project building shadows on ground</label>
             <div class="result-grid">
               <div class="result"><div class="r-label">Solar altitude</div><div class="r-value" id="sunElevation">—</div></div>
               <div class="result"><div class="r-label">Solar azimuth</div><div class="r-value" id="sunAzimuth">—</div></div>
             </div>
             <div class="metric-list" style="margin-top:9px"><div class="metric"><span>Estimated shadow length</span><strong id="shadowLength">—</strong></div></div>
-            <p class="tiny" style="margin:8px 0 0">Uses the map centre and a simplified solar-position calculation. Input time is treated as local solar time, not corrected for time zone or equation of time.</p>
+            <p class="tiny" style="margin:8px 0 0">Uses the map centre and a simplified solar-position calculation. Input time is treated as local solar time, not corrected for time zone or equation of time. Shadow projection extrudes each mapped building footprint along the solar azimuth by its height / tan(altitude).</p>
           </div>
         </div>
+
+        <!-- NEW: Sun hours sampling -->
+        <div class="section">
+          <p class="section-title">Sun hours · site centre</p>
+          <div class="card">
+            <div class="form-grid">
+              <label><span class="field-label">Interval</span><select id="sunHoursStep" class="field"><option value="15">15 min</option><option value="30" selected>30 min</option><option value="60">60 min</option></select></label>
+              <label><span class="field-label">Window</span><input id="sunHoursWindow" class="field" type="text" value="09:00–17:00" placeholder="09:00–17:00"></label>
+            </div>
+            <button class="btn full accent" id="computeSunHoursBtn" style="margin-top:7px">Compute sun hours at site centre</button>
+            <div class="result-grid" style="margin-top:8px">
+              <div class="result"><div class="r-label">Direct sun samples</div><div class="r-value" id="sunHoursLit">—</div></div>
+              <div class="result"><div class="r-label">Estimated sun hours</div><div class="r-value" id="sunHoursValue">—</div></div>
+            </div>
+            <p class="tiny" style="margin:7px 0 0">Checks whether the site centre is inside any building's ground shadow at each time step. A rough first-pass check, not a daylight factor or rights-to-light study.</p>
+          </div>
+        </div>
+
         <div class="section">
           <p class="section-title">Selected building</p>
           <div class="card" id="buildingCard"><div class="muted small">Click a mapped building footprint to inspect its footprint area in square metres and square feet.</div></div>
@@ -98,6 +136,8 @@
           <label class="check-row"><input id="showWater" type="checkbox" checked> Water features <span class="label-sub">OSM</span></label>
           <label class="check-row"><input id="showRoads" type="checkbox" checked> Road network <span class="label-sub">OSM</span></label>
           <label class="check-row"><input id="showShadowLayer" type="checkbox" checked> Sun / shadow guide <span class="label-sub">model</span></label>
+          <!-- NEW: buildable envelope layer toggle -->
+          <label class="check-row"><input id="showEnvelope" type="checkbox" checked> Buildable envelope <span class="label-sub">setbacks</span></label>
           <button class="btn full" id="clearDataBtn" style="margin-top:9px">Clear downloaded context</button>
         </div></div>
         <div class="section"><p class="section-title">Map appearance</p><div class="card">
@@ -116,6 +156,25 @@
           <div class="result-grid"><div class="result"><div class="r-label">Boundary area</div><div class="r-value" id="boundaryArea">—</div></div><div class="result"><div class="r-label">Boundary area (ft²)</div><div class="r-value" id="boundaryAreaSqft">—</div></div><div class="result"><div class="r-label">Perimeter</div><div class="r-value" id="boundaryPerimeter">—</div></div></div>
           <p id="boundaryStatus" class="tiny" aria-live="polite" style="margin:8px 0 0">No site boundary yet.</p>
         </div></div>
+
+        <!-- NEW: Buildable envelope -->
+        <div class="section">
+          <p class="section-title">Buildable envelope</p>
+          <div class="card">
+            <p class="small muted" style="margin:0 0 8px">Enter assumed setbacks and a height cap. The envelope is a visual guide, not a zoning determination.</p>
+            <div class="form-grid">
+              <label><span class="field-label">Setback (m)</span><input id="setbackInput" class="field" type="number" min="0" max="50" step="0.5" value="3"></label>
+              <label><span class="field-label">Max height (m)</span><input id="maxHeightInput" class="field" type="number" min="3" max="200" step="1" value="18"></label>
+            </div>
+            <button class="btn full" id="updateEnvelopeBtn" style="margin-top:7px">Update buildable envelope</button>
+            <div class="result-grid" style="margin-top:8px">
+              <div class="result"><div class="r-label">Envelope footprint</div><div class="r-value" id="envelopeArea">—</div></div>
+              <div class="result"><div class="r-label">Max potential GFA</div><div class="r-value" id="envelopeGfa">—</div></div>
+            </div>
+            <p class="tiny" style="margin:7px 0 0">Envelope = inward buffer of the drawn boundary. Max potential GFA = envelope footprint × max height ÷ 3 m (assumed floor-to-floor).</p>
+          </div>
+        </div>
+
         <div class="section"><p class="section-title">Workspace</p><div class="card">
           <label class="field-label" for="projectName">Project name</label><input id="projectName" class="field" value="Untitled site study" maxlength="120">
           <div class="row wrap" style="margin-top:9px"><button class="btn" id="saveLocalBtn">Save in this browser</button><button class="btn" id="loadLocalBtn">Restore saved</button></div>
@@ -153,6 +212,10 @@
   let activeStyleUrl = 'https://tiles.openfreemap.org/styles/positron';
   let buildings = [], greens = [], waters = [], roads = [], trees = [], selectedBuilding = null, mapHome = {center: initialCenter, zoom: 13};
   let lastAnalysis = null;
+  // NEW: cached computed geometry
+  let shadowProjection = null;       // FeatureCollection
+  let buildableEnvelope = null;      // Feature or null
+  let siteMetricsCache = null;       // { siteArea, footprint, gfa, count, far, coverage }
   const EMPTY = {type:'FeatureCollection',features:[]};
   const toasts = $('toasts');
   const number = n => Number.isFinite(n) ? new Intl.NumberFormat('en', {maximumFractionDigits:0}).format(n) : '—';
@@ -160,6 +223,7 @@
   const fmtSqft = m2 => Number.isFinite(m2) && m2 >= 0 ? number(m2 * 10.7639104167) + ' ft²' : '—';
   const fmtM2Exact = m2 => Number.isFinite(m2) && m2 >= 0 ? number(m2) + ' m²' : '—';
   const fmtLength = m => !Number.isFinite(m) ? '—' : m >= 1000 ? (m/1000).toFixed(2)+' km' : number(m)+' m';
+  const fmtFar = far => Number.isFinite(far) ? far.toFixed(2) : '—';
   function toast(message, kind='ok') {
     const el = document.createElement('div'); el.className='toast';
     const mark = document.createElement('span'); mark.className='toast-mark'; mark.textContent = kind==='err'?'[x]':kind==='warn'?'[!]':'[*]';
@@ -217,6 +281,9 @@
     paintSource('boundary-data',boundary||EMPTY);
     paintSource('draw-data',drawFeatureCollection());
     paintSource('selected-data',selectedBuilding?{type:'FeatureCollection',features:[selectedBuilding]}:EMPTY);
+    // NEW sources
+    paintSource('shadow-projection-data', shadowProjection || EMPTY);
+    paintSource('envelope-data', buildableEnvelope ? {type:'FeatureCollection',features:[buildableEnvelope]} : EMPTY);
     applyLayerStates();
   }
   function drawFeatureCollection() {
@@ -235,6 +302,10 @@
     setVisibility('tree-points',$('showTrees').checked);
     setVisibility('tree-rows',$('showTrees').checked);
     setVisibility('shadow-line',$('showShadowLayer').checked && $('showShadow').checked);
+    // NEW visibility
+    setVisibility('shadow-projection-fill', $('showShadowLayer').checked && $('showShadowProjection').checked);
+    setVisibility('envelope-fill', $('showEnvelope').checked);
+    setVisibility('envelope-outline', $('showEnvelope').checked);
     const colorExpr=buildingColorExpression();
     if(map?.getLayer('building-footprints')) map.setPaintProperty('building-footprints','fill-color',colorExpr);
     if(map?.getLayer('building-extrusion')) map.setPaintProperty('building-extrusion','fill-extrusion-color',colorExpr);
@@ -280,6 +351,13 @@
     map.addLayer({id:'selected-outline',type:'line',source:'selected-data',paint:{'line-color':'#b45309','line-width':3}});
     map.addSource('shadow-data',{type:'geojson',data:EMPTY});
     map.addLayer({id:'shadow-line',type:'line',source:'shadow-data',paint:{'line-color':'#b45309','line-width':3,'line-dasharray':[1,1]}});
+    // NEW: shadow projection fill
+    map.addSource('shadow-projection-data',{type:'geojson',data:EMPTY});
+    map.addLayer({id:'shadow-projection-fill',type:'fill',source:'shadow-projection-data',paint:{'fill-color':'#b45309','fill-opacity':.22,'fill-outline-color':'#b45309'}});
+    // NEW: buildable envelope
+    map.addSource('envelope-data',{type:'geojson',data:EMPTY});
+    map.addLayer({id:'envelope-fill',type:'fill',source:'envelope-data',paint:{'fill-color':'#b45309','fill-opacity':.06}});
+    map.addLayer({id:'envelope-outline',type:'line',source:'envelope-data',paint:{'line-color':'#b45309','line-width':2,'line-dasharray':[4,2]}});
     applyLayerStates();
   }
   function initMap() {
@@ -324,7 +402,7 @@
     try {
       const els=await requestOverpass(query); const bs=[],gs=[],ws=[],rs=[],ts=[]; const ids=new Set();
       for(const el of els) {const t=el.tags||{};let cat=null;if(t.building)cat='building';else if(t.natural==='tree'||t.natural==='tree_row')cat='tree';else if(t.highway)cat='road';else if(t.natural==='water'||t.natural==='wetland'||t.waterway||t.landuse==='reservoir')cat='water';else if(t.leisure||t.landuse||t.natural==='wood')cat='green';else continue; const f=geoFeature(el,cat);if(!f||ids.has(f.id))continue;ids.add(f.id);if(cat==='building')bs.push(f);else if(cat==='green')gs.push(f);else if(cat==='water')ws.push(f);else if(cat==='tree')ts.push(f);else rs.push(f);}
-      buildings=bs;greens=gs;waters=ws;roads=rs;trees=ts;selectedBuilding=null;updateDataSources();computeStats(center,radius);
+      buildings=bs;greens=gs;waters=ws;roads=rs;trees=ts;selectedBuilding=null;shadowProjection=null;updateDataSources();computeStats(center,radius);
       lastAnalysis={center,radius,loadedAt:new Date().toISOString(),counts:{buildings:bs.length,green:gs.length,water:ws.length,roads:rs.length,trees:ts.length}};
       const total=bs.length+gs.length+ws.length+rs.length+ts.length;setDataStatus(`${number(total)} mapped features loaded · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`);$('connectionStatus').textContent='OSM data loaded';setMapStatus('Context loaded.',`${bs.length} buildings · ${gs.length} green areas · ${ws.length} water features · ${rs.length} road segments · ${ts.length} tree features.`);toast(`Loaded ${number(total)} OpenStreetMap features.`);computeSun();
     } catch(e) {setDataStatus('Could not load public map data.');setMapStatus('OSM request failed.',e.message||'Try again later.');$('connectionStatus').textContent='OSM request failed';toast('Could not load OSM context: '+(e.message||'network error'),'err');}
@@ -397,25 +475,197 @@
     const start=[c.lng,c.lat]; if(elev<=0||!$('showShadow').checked){paintSource('shadow-data',EMPTY);applyLayerStates();return;}
     const distance=Math.min(500,len||0), bearing=(s.azimuth+180)*Math.PI/180, lat2=c.lat+(distance*Math.cos(bearing))/110574, lon2=c.lng+(distance*Math.sin(bearing))/(111320*Math.max(.15,Math.cos(c.lat*Math.PI/180)));
     paintSource('shadow-data',{type:'FeatureCollection',features:[{type:'Feature',properties:{kind:'approx-shadow'},geometry:{type:'LineString',coordinates:[start,[lon2,lat2]]}}]}); applyLayerStates();
+    // NEW: refresh ground shadow projection when sun changes
+    if($('showShadowProjection').checked) computeShadowProjection();
   }
+
+  // ============================================================
+  // NEW: shadow projection, buildable envelope, site metrics, sun hours
+  // ============================================================
+  function computeShadowProjection() {
+    if(!mapReady || !buildings.length) { shadowProjection = null; paintSource('shadow-projection-data', EMPTY); return; }
+    const c = map.getCenter(), date = $('sunDate').value ? new Date($('sunDate').value + 'T12:00:00') : new Date();
+    const time = $('sunTime').value || '14:00';
+    const sun = sunPosition(date, time, c.lat, c.lng);
+    if (sun.elevation <= 2) { shadowProjection = null; paintSource('shadow-projection-data', EMPTY); return; }
+    const tanAlt = Math.tan(sun.elevation * Math.PI / 180);
+    const az = sun.azimuth * Math.PI / 180;
+    // Shadow direction is opposite the solar azimuth; dx east, dy north
+    const shadowDx = -Math.sin(az), shadowDy = -Math.cos(az);
+    const cosLat = Math.cos(c.lat * Math.PI / 180);
+    const features = [];
+    for (const f of buildings) {
+      if (!f.geometry || (f.geometry.type !== 'Polygon' && f.geometry.type !== 'MultiPolygon')) continue;
+      const height = Number(f.properties?.height) || 9;
+      if (height <= 0) continue;
+      const shadowDist = Math.min(500, height / tanAlt); // cap at 500 m for sanity
+      const rings = f.geometry.type === 'Polygon' ? f.geometry.coordinates : f.geometry.coordinates.flat();
+      for (const ring of rings) {
+        if (!ring || ring.length < 4) continue;
+        const projected = ring.map(([lon, lat]) => {
+          const dLon = (shadowDist * shadowDx) / (111320 * Math.max(0.15, cosLat));
+          const dLat = (shadowDist * shadowDy) / 110574;
+          return [lon + dLon, lat + dLat];
+        });
+        // Combine the original ring and the projected ring into one "shadow hull" approximation
+        const hull = [...ring, ...projected];
+        features.push({ type: 'Feature', properties: { kind: 'shadow-projection', height }, geometry: { type: 'Polygon', coordinates: [hull] } });
+      }
+    }
+    shadowProjection = { type: 'FeatureCollection', features };
+    paintSource('shadow-projection-data', shadowProjection);
+  }
+
+  function computeBuildableEnvelope() {
+    if (!boundary || !boundary.features?.[0]?.geometry) { buildableEnvelope = null; paintSource('envelope-data', EMPTY); updateEnvelopeMetrics(); return; }
+    const geom = boundary.features[0].geometry;
+    if (geom.type !== 'Polygon' || !geom.coordinates?.[0]) { buildableEnvelope = null; paintSource('envelope-data', EMPTY); updateEnvelopeMetrics(); return; }
+    const setback = Math.max(0, Number($('setbackInput').value) || 0);
+    const ring = geom.coordinates[0].slice(0, -1);
+    if (ring.length < 3 || setback <= 0) {
+      // If no setback, envelope is the boundary itself
+      buildableEnvelope = setback <= 0 ? { type: 'Feature', properties: { kind: 'envelope' }, geometry: geom } : null;
+      paintSource('envelope-data', buildableEnvelope ? { type: 'FeatureCollection', features: [buildableEnvelope] } : EMPTY);
+      updateEnvelopeMetrics();
+      return;
+    }
+    const c = centroid(geom);
+    if (!c) { buildableEnvelope = null; paintSource('envelope-data', EMPTY); updateEnvelopeMetrics(); return; }
+    const cosLat = Math.cos(c[1] * Math.PI / 180);
+    const inward = ring.map(([lon, lat]) => {
+      const dx = c[0] - lon, dy = c[1] - lat;
+      const dist = Math.sqrt((dx * 111320 * cosLat) ** 2 + (dy * 110574) ** 2);
+      if (dist < 0.001) return [lon, lat];
+      const moveX = (setback / (111320 * cosLat)) * (dx / (dist / 111320));
+      const moveY = (setback / 110574) * (dy / (dist / 110574));
+      return [lon + moveX * 0.5, lat + moveY * 0.5]; // simple half-step inward
+    });
+    buildableEnvelope = { type: 'Feature', properties: { kind: 'envelope' }, geometry: { type: 'Polygon', coordinates: [inward, inward[0]] } };
+    paintSource('envelope-data', { type: 'FeatureCollection', features: [buildableEnvelope] });
+    updateEnvelopeMetrics();
+  }
+
+  function updateEnvelopeMetrics() {
+    if (!buildableEnvelope) { $('envelopeArea').textContent = '—'; $('envelopeGfa').textContent = '—'; return; }
+    const area = polygonArea(buildableEnvelope.geometry);
+    $('envelopeArea').textContent = fmtArea(area);
+    const maxH = Math.max(3, Number($('maxHeightInput').value) || 18);
+    const maxGfa = area * Math.max(1, Math.round(maxH / 3));
+    $('envelopeGfa').textContent = fmtArea(maxGfa);
+  }
+
+  function computeSiteMetrics() {
+    if (!boundary || !boundary.features?.[0]?.geometry) {
+      siteMetricsCache = null;
+      ['siteAreaMetric','siteFootprintMetric','siteCoverageMetric','siteFarMetric','siteGfaMetric','siteCountMetric'].forEach(id => $(id).textContent = '—');
+      return;
+    }
+    const siteGeom = boundary.features[0].geometry;
+    const siteArea = polygonArea(siteGeom);
+    if (siteArea <= 0) { siteMetricsCache = null; return; }
+    const inside = buildings.filter(f => {
+      const c = centroid(f.geometry);
+      return c && pointInPolygon(c, siteGeom);
+    });
+    const footprint = inside.reduce((s, f) => s + buildingAreaM2(f), 0);
+    const gfa = inside.map(grossFloorAreaM2).filter(x => Number.isFinite(x.area)).reduce((s, x) => s + x.area, 0);
+    const coverage = footprint / siteArea;
+    const far = gfa > 0 ? gfa / siteArea : null;
+    siteMetricsCache = { siteArea, footprint, gfa, far, coverage, count: inside.length };
+    $('siteAreaMetric').textContent = fmtArea(siteArea);
+    $('siteFootprintMetric').textContent = fmtArea(footprint);
+    $('siteCoverageMetric').textContent = (coverage * 100).toFixed(1) + '%';
+    $('siteFarMetric').textContent = far != null ? fmtFar(far) : '—';
+    $('siteGfaMetric').textContent = gfa > 0 ? fmtArea(gfa) : '—';
+    $('siteCountMetric').textContent = number(inside.length);
+  }
+
+  function pointInPolygon(point, geom) {
+    // Ray-casting, works for Polygon and MultiPolygon outer rings only (sufficient for this preliminary tool)
+    const rings = geom.type === 'Polygon' ? [geom.coordinates[0]] : geom.coordinates.map(poly => poly[0]);
+    let inside = false;
+    for (const ring of rings) {
+      if (!ring) continue;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+        if (((yi > point[1]) !== (yj > point[1])) && (point[0] < (xj - xi) * (point[1] - yi) / (yj - yi) + xi)) inside = !inside;
+      }
+    }
+    return inside;
+  }
+
+  function computeSunHours() {
+    if (!mapReady) { toast('Map is not ready yet.', 'warn'); return; }
+    const c = map.getCenter();
+    const date = $('sunDate').value ? new Date($('sunDate').value + 'T12:00:00') : new Date();
+    const window = ($('sunHoursWindow').value || '09:00–17:00').replace('–', '-').split('-').map(s => s.trim());
+    if (window.length !== 2) { toast('Enter a time window like 09:00–17:00.', 'warn'); return; }
+    const [startH, startM] = window[0].split(':').map(Number);
+    const [endH, endM] = window[1].split(':').map(Number);
+    const step = Number($('sunHoursStep').value) || 30;
+    const startMin = startH * 60 + startM, endMin = endH * 60 + endM;
+    if (endMin <= startMin) { toast('End time must be after start time.', 'warn'); return; }
+    let lit = 0, total = 0;
+    for (let m = startMin; m <= endMin; m += step) {
+      const hh = Math.floor(m / 60), mm = m % 60;
+      const timeStr = String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
+      const sun = sunPosition(date, timeStr, c.lat, c.lng);
+      if (sun.elevation <= 2) { total++; continue; }
+      const shadowDist = (h) => h / Math.tan(sun.elevation * Math.PI / 180);
+      const az = sun.azimuth * Math.PI / 180;
+      const shadowDx = -Math.sin(az), shadowDy = -Math.cos(az);
+      const cosLat = Math.cos(c.lat * Math.PI / 180);
+      let blocked = false;
+      for (const f of buildings) {
+        if (!f.geometry || (f.geometry.type !== 'Polygon' && f.geometry.type !== 'MultiPolygon')) continue;
+        const h = Number(f.properties?.height) || 9;
+        const d = Math.min(500, shadowDist(h));
+        const rings = f.geometry.type === 'Polygon' ? f.geometry.coordinates : f.geometry.coordinates.flat();
+        for (const ring of rings) {
+          if (!ring || ring.length < 4) continue;
+          // Approximate: project the site point back toward the sun, check if it hits the building footprint
+          const testLon = c.lng - (d * shadowDx) / (111320 * Math.max(0.15, cosLat));
+          const testLat = c.lat - (d * shadowDy) / 110574;
+          if (pointInPolygon([testLon, testLat], { type: 'Polygon', coordinates: [ring] })) { blocked = true; break; }
+        }
+        if (blocked) break;
+      }
+      if (!blocked) lit++;
+      total++;
+    }
+    $('sunHoursLit').textContent = `${lit} / ${total}`;
+    const hours = (lit / total) * ((endMin - startMin) / 60);
+    $('sunHoursValue').textContent = hours.toFixed(1) + ' h';
+  }
+
+  // ============================================================
+  // Existing boundary / export / project functions (with new metric hooks)
+  // ============================================================
   function toggleDrawing(on) { drawing=on; if(!on && map)map.getCanvas().style.cursor='';else if(map)map.getCanvas().style.cursor='crosshair';$('drawHint').hidden=!on;$('drawBoundaryBtn').textContent=on?'Drawing boundary…':'＋ Draw boundary';$('finishBoundaryBtn').disabled=!on||drawPoints.length<3;if(on){switchPanel('projectPanel');toast('Boundary drawing enabled. Click at least three points on the map.');} }
   function finishBoundary() {
     if(drawPoints.length<3){toast('Add at least three points before finishing.','warn');return;}
     const coords=drawPoints.slice();coords.push(coords[0]);boundary={type:'FeatureCollection',features:[{type:'Feature',properties:{name:$('projectName').value||'Study boundary'},geometry:{type:'Polygon',coordinates:[coords]}}]};
-    toggleDrawing(false);$('boundaryArea').textContent=fmtArea(ringArea(coords.slice(0,-1)));$('boundaryAreaSqft').textContent=fmtSqft(ringArea(coords.slice(0,-1)));let per=0;for(let i=1;i<coords.length;i++)per+=haversine(coords[i-1],coords[i]);$('boundaryPerimeter').textContent=fmtLength(per);$('boundaryStatus').textContent=`Boundary completed · ${drawPoints.length} vertices.`;updateDataSources();toast('Site boundary created.');
+    toggleDrawing(false);$('boundaryArea').textContent=fmtArea(ringArea(coords.slice(0,-1)));$('boundaryAreaSqft').textContent=fmtSqft(ringArea(coords.slice(0,-1)));let per=0;for(let i=1;i<coords.length;i++)per+=haversine(coords[i-1],coords[i]);$('boundaryPerimeter').textContent=fmtLength(per);$('boundaryStatus').textContent=`Boundary completed · ${drawPoints.length} vertices.`;updateDataSources();
+    // NEW: recompute site metrics and envelope
+    computeSiteMetrics(); computeBuildableEnvelope(); computeShadowProjection();
+    toast('Site boundary created. Site metrics and envelope updated.');
   }
-  function clearBoundary() { drawing=false;drawPoints=[];boundary=null;toggleDrawing(false);updateDataSources();$('boundaryArea').textContent='—';$('boundaryAreaSqft').textContent='—';$('boundaryPerimeter').textContent='—';$('boundaryStatus').textContent='No site boundary yet.';$('finishBoundaryBtn').disabled=true; }
+  function clearBoundary() { drawing=false;drawPoints=[];boundary=null;buildableEnvelope=null;shadowProjection=null;siteMetricsCache=null;toggleDrawing(false);updateDataSources();$('boundaryArea').textContent='—';$('boundaryAreaSqft').textContent='—';$('boundaryPerimeter').textContent='—';$('boundaryStatus').textContent='No site boundary yet.';$('finishBoundaryBtn').disabled=true;computeSiteMetrics();updateEnvelopeMetrics(); }
   function downloadBlob(blob,filename) {const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);}
   function filename(ext) {const n=($('projectName').value||'site-study').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'site-study';return n+'.'+ext;}
-  function buildProject() { return {app:'Aznur Site Studio',version:1,projectName:$('projectName').value,createdAt:new Date().toISOString(),view:map?{center:map.getCenter().toArray(),zoom:map.getZoom(),pitch:map.getPitch(),bearing:map.getBearing()}:mapHome,settings:{radius:Number($('radiusSelect').value),basemap:$('basemapSelect').value,showBuildings:$('showBuildings').checked,show3d:$('show3d').checked,showGreen:$('showGreen').checked,showTrees:$('showTrees').checked,showWater:$('showWater').checked,showRoads:$('showRoads').checked,buildingColorMode:$('buildingColorMode').value,minBuildingArea:Number($('minBuildingArea').value)||0,showShadow:$('showShadow').checked,showShadowLayer:$('showShadowLayer').checked,sunDate:$('sunDate').value,sunTime:$('sunTime').value,obstacleHeight:Number($('obstacleHeight').value)},boundary:boundary||null,data:{buildings,greens,waters,roads,trees},analysis:lastAnalysis}; }
+  function buildProject() { return {app:'Aznur Site Studio',version:2,projectName:$('projectName').value,createdAt:new Date().toISOString(),view:map?{center:map.getCenter().toArray(),zoom:map.getZoom(),pitch:map.getPitch(),bearing:map.getBearing()}:mapHome,settings:{radius:Number($('radiusSelect').value),basemap:$('basemapSelect').value,showBuildings:$('showBuildings').checked,show3d:$('show3d').checked,showGreen:$('showGreen').checked,showTrees:$('showTrees').checked,showWater:$('showWater').checked,showRoads:$('showRoads').checked,buildingColorMode:$('buildingColorMode').value,minBuildingArea:Number($('minBuildingArea').value)||0,showShadow:$('showShadow').checked,showShadowLayer:$('showShadowLayer').checked,showShadowProjection:$('showShadowProjection').checked,showEnvelope:$('showEnvelope').checked,setback:Number($('setbackInput').value)||0,maxHeight:Number($('maxHeightInput').value)||18,sunDate:$('sunDate').value,sunTime:$('sunTime').value,obstacleHeight:Number($('obstacleHeight').value),sunHoursStep:$('sunHoursStep').value,sunHoursWindow:$('sunHoursWindow').value},boundary:boundary||null,envelope:buildableEnvelope||null,data:{buildings,greens,waters,roads,trees},analysis:lastAnalysis,siteMetrics:siteMetricsCache}; }
   function saveLocal() {try {localStorage.setItem(STORE_KEY,JSON.stringify(buildProject()));toast('Project settings saved in this browser.');}catch(e){toast('Could not save locally: '+e.message,'err');}}
   function applyProject(p,includeData=true) { if(!p||p.app!=='Aznur Site Studio')throw new Error('This file is not an Aznur Site Studio project.'); $('projectName').value=p.projectName||'Untitled site study'; const s=p.settings||{};
     if(s.radius)$('radiusSelect').value=String(s.radius);if(s.basemap)$('basemapSelect').value=s.basemap;if(s.buildingColorMode)$('buildingColorMode').value=s.buildingColorMode;if(Number.isFinite(s.minBuildingArea))$('minBuildingArea').value=s.minBuildingArea;
-    for(const k of ['showBuildings','show3d','showGreen','showTrees','showWater','showRoads','showShadow','showShadowLayer'])if(typeof s[k]==='boolean')$(k).checked=s[k];if(s.sunDate)$('sunDate').value=s.sunDate;if(s.sunTime)$('sunTime').value=s.sunTime;if(s.obstacleHeight)$('obstacleHeight').value=s.obstacleHeight;
+    for(const k of ['showBuildings','show3d','showGreen','showTrees','showWater','showRoads','showShadow','showShadowLayer','showShadowProjection','showEnvelope'])if(typeof s[k]==='boolean')$(k).checked=s[k];
+    if(Number.isFinite(s.setback))$('setbackInput').value=s.setback;if(Number.isFinite(s.maxHeight))$('maxHeightInput').value=s.maxHeight;
+    if(s.sunDate)$('sunDate').value=s.sunDate;if(s.sunTime)$('sunTime').value=s.sunTime;if(s.obstacleHeight)$('obstacleHeight').value=s.obstacleHeight;if(s.sunHoursStep)$('sunHoursStep').value=s.sunHoursStep;if(s.sunHoursWindow)$('sunHoursWindow').value=s.sunHoursWindow;
     if(p.view&&map){map.jumpTo({center:p.view.center||initialCenter,zoom:p.view.zoom||13,pitch:p.view.pitch||0,bearing:p.view.bearing||0});mapHome={center:p.view.center||initialCenter,zoom:p.view.zoom||13};}
     if(includeData&&p.data){buildings=Array.isArray(p.data.buildings)?p.data.buildings:[];greens=Array.isArray(p.data.greens)?p.data.greens:[];waters=Array.isArray(p.data.waters)?p.data.waters:[];roads=Array.isArray(p.data.roads)?p.data.roads:[];trees=Array.isArray(p.data.trees)?p.data.trees:[];buildings.forEach(f=>{if(f?.properties&&!Number.isFinite(f.properties.footprintM2)&&f.geometry?.type)f.properties.footprintM2=polygonArea(f.geometry);});}
-    boundary=p.boundary||null;const geom=boundary?.features?.[0]?.geometry;if(geom?.type==='Polygon'){const c=geom.coordinates[0];$('boundaryArea').textContent=fmtArea(ringArea(c.slice(0,-1)));$('boundaryAreaSqft').textContent=fmtSqft(ringArea(c.slice(0,-1)));let per=0;for(let i=1;i<c.length;i++)per+=haversine(c[i-1],c[i]);$('boundaryPerimeter').textContent=fmtLength(per);$('boundaryStatus').textContent='Boundary restored.';} else {$('boundaryArea').textContent='—';$('boundaryPerimeter').textContent='—';$('boundaryStatus').textContent='No site boundary yet.';}
+    boundary=p.boundary||null;buildableEnvelope=p.envelope||null;const geom=boundary?.features?.[0]?.geometry;if(geom?.type==='Polygon'){const c=geom.coordinates[0];$('boundaryArea').textContent=fmtArea(ringArea(c.slice(0,-1)));$('boundaryAreaSqft').textContent=fmtSqft(ringArea(c.slice(0,-1)));let per=0;for(let i=1;i<c.length;i++)per+=haversine(c[i-1],c[i]);$('boundaryPerimeter').textContent=fmtLength(per);$('boundaryStatus').textContent='Boundary restored.';} else {$('boundaryArea').textContent='—';$('boundaryPerimeter').textContent='—';$('boundaryStatus').textContent='No site boundary yet.';}
     if(mapReady) {if(s.basemap && s.basemap!==activeStyleUrl){try{activeStyleUrl=s.basemap;map.setStyle(s.basemap);map.once('style.load',()=>{if(!map.getSource('buildings-data'))addSourceLayer();updateDataSources();computeSun();});}catch(_){}}else{updateDataSources();}if(lastAnalysis)computeStats(lastAnalysis.center,lastAnalysis.radius);else computeStats(map.getCenter().toArray(),Number($('radiusSelect').value));computeSun();}
+    // NEW: restore derived metrics
+    computeSiteMetrics(); computeBuildableEnvelope(); if($('showShadowProjection').checked) computeShadowProjection();
   }
   function exportBuildingsCsv() {
     if(!buildings.length){toast('Load building context before exporting building areas.','warn');return;}
@@ -425,29 +675,33 @@
     const csv='\ufeff'+[headers,...rows].map(r=>r.map(quote).join(',')).join('\r\n');downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),filename('csv'));toast(`Exported ${number(rows.length)} building records to CSV.`);
   }
   function exportProject() {downloadBlob(new Blob([JSON.stringify(buildProject(),null,2)],{type:'application/json'}),filename('json'));toast('Project JSON exported.');}
-  function exportGeoJSON() {const fc={type:'FeatureCollection',name:$('projectName').value,features:[...buildings,...greens,...waters,...roads,...trees,...(boundary?.features||[])]};downloadBlob(new Blob([JSON.stringify(fc)],{type:'application/geo+json'}),filename('geojson'));toast('GeoJSON exported.');}
+  function exportGeoJSON() {const fc={type:'FeatureCollection',name:$('projectName').value,features:[...buildings,...greens,...waters,...roads,...trees,...(boundary?.features||[]),...(buildableEnvelope?[buildableEnvelope]:[])]};downloadBlob(new Blob([JSON.stringify(fc)],{type:'application/geo+json'}),filename('geojson'));toast('GeoJSON exported.');}
   function exportPng() {try {map.triggerRepaint();const canvas=map.getCanvas();canvas.toBlob(blob=>{if(!blob){toast('The browser could not render a PNG export.','err');return;}downloadBlob(blob,filename('png'));toast('Map PNG exported.');},'image/png');}catch(e){toast('PNG export blocked by browser canvas security. Try SVG or GeoJSON.','err');}}
   function exportSvg() {
-    const features=[...greens,...waters,...roads,...buildings,...(boundary?.features||[])]; if(!features.length){toast('Load map context or draw a boundary before exporting a diagram.','warn');return;}
+    const features=[...greens,...waters,...roads,...buildings,...(boundary?.features||[]),...(buildableEnvelope?[buildableEnvelope]:[])]; if(!features.length){toast('Load map context or draw a boundary before exporting a diagram.','warn');return;}
     const W=1200,H=850,pad=42;let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;const pointWalk=x=>{if(typeof x?.[0]==='number'&&typeof x?.[1]==='number'){minX=Math.min(minX,x[0]);maxX=Math.max(maxX,x[0]);minY=Math.min(minY,x[1]);maxY=Math.max(maxY,x[1]);}else if(Array.isArray(x))x.forEach(pointWalk);};features.forEach(f=>pointWalk(f.geometry.coordinates));if(!Number.isFinite(minX)||maxX===minX||maxY===minY){toast('Not enough geometry for SVG export.','warn');return;}const cos=Math.cos(((minY+maxY)/2)*Math.PI/180);const xSpan=(maxX-minX)*cos,ySpan=maxY-minY,scale=Math.min((W-2*pad)/xSpan,(H-2*pad)/ySpan);const project=p=>[pad+(p[0]-minX)*cos*scale,H-pad-(p[1]-minY)*scale];
     const pathFor=geom=>{const paths=[];const addLine=(coords,closed=false)=>{if(!coords?.length)return;paths.push(coords.map((p,i)=>{const q=project(p);return(i?'L':'M')+q[0].toFixed(2)+','+q[1].toFixed(2)}).join(' ') + (closed?' Z':''));};if(geom.type==='Polygon')geom.coordinates.forEach(r=>addLine(r,true));else if(geom.type==='MultiPolygon')geom.coordinates.forEach(poly=>poly.forEach(r=>addLine(r,true)));else if(geom.type==='LineString')addLine(geom.coordinates);else if(geom.type==='MultiLineString')geom.coordinates.forEach(line=>addLine(line));return paths.join(' ');};
-    let body=''; for(const f of features){const g=f.geometry;if(!g)continue;let fill='none',stroke='var(--line)',sw=1;if(f.properties.category==='building'){fill='#d6cfc5';stroke='#8e857b';sw=.6;}else if(f.properties.category==='green'){fill='#a5b59b';stroke='#8fa184';sw=.8;}else if(f.properties.category==='water'){fill='#a6c3d3';stroke='#7fa8bc';sw=.8;}else if(f.properties.category==='road'){stroke='#b7a58c';sw=1.5;}else if(f.properties.name==='Study boundary'||boundary?.features?.some(b=>b===f)){fill='#b45309';stroke='#b45309';sw=3;}
+    let body=''; for(const f of features){const g=f.geometry;if(!g)continue;let fill='none',stroke='var(--line)',sw=1;if(f.properties.category==='building'){fill='#d6cfc5';stroke='#8e857b';sw=.6;}else if(f.properties.category==='green'){fill='#a5b59b';stroke='#8fa184';sw=.8;}else if(f.properties.category==='water'){fill='#a6c3d3';stroke='#7fa8bc';sw=.8;}else if(f.properties.category==='road'){stroke='#b7a58c';sw=1.5;}else if(f.properties.kind==='envelope'){fill='none';stroke='#b45309';sw=2;}else if(f.properties.name==='Study boundary'||boundary?.features?.some(b=>b===f)){fill='#b45309';stroke='#b45309';sw=3;}
       body+=`<path d="${pathFor(g)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" vector-effect="non-scaling-stroke"/>`;}
     const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><rect width="100%" height="100%" fill="#fdfcfc"/><g>${body}</g><g fill="#201d1d" font-family="ui-monospace,monospace"><text x="${pad}" y="26" font-size="13" letter-spacing="1.5">AZNUR / SITE STUDIO</text><text x="${pad}" y="${H-14}" font-size="10">${escXml($('projectName').value)} · Public OSM-derived context · Preliminary diagram</text></g></svg>`;
     downloadBlob(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),filename('svg'));toast('SVG context diagram exported.');
   }
   function escXml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));}
   function resetMap() {if(!map)return;const target=lastAnalysis?.center||mapHome.center||initialCenter;map.flyTo({center:target,zoom:mapHome.zoom||13,pitch:$('show3d').checked?50:0,bearing:0,duration:500});}
-  function clearData() {buildings=[];greens=[];waters=[];roads=[];trees=[];selectedBuilding=null;lastAnalysis=null;updateDataSources();['statBuildings','statFootprint','statGreen','statCoverage','statAverageBuilding','statFloorArea'].forEach(id=>$(id).textContent='—');$('buildingCard').innerHTML='<div class="muted small">Click a mapped building footprint to inspect its area in square metres and square feet.</div>';updateBuildingDiagram([]);$('connectionStatus').textContent='Map engine ready';setDataStatus('Downloaded context cleared.');setMapStatus('Context cleared.','Load OSM data again when you are ready.');toast('Downloaded map context cleared.');}
+  function clearData() {buildings=[];greens=[];waters=[];roads=[];trees=[];selectedBuilding=null;lastAnalysis=null;shadowProjection=null;updateDataSources();['statBuildings','statFootprint','statGreen','statCoverage','statAverageBuilding','statFloorArea'].forEach(id=>$(id).textContent='—');$('buildingCard').innerHTML='<div class="muted small">Click a mapped building footprint to inspect its area in square metres and square feet.</div>';updateBuildingDiagram([]);$('connectionStatus').textContent='Map engine ready';setDataStatus('Downloaded context cleared.');setMapStatus('Context cleared.','Load OSM data again when you are ready.');toast('Downloaded map context cleared.');computeSiteMetrics();}
   function setupEvents() {
     document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>switchPanel(t.dataset.panel)));
     $('themeSelect').addEventListener('change',e=>setTheme(e.target.value));$('searchGo').addEventListener('click',searchPlace);$('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchPlace();}});
     $('analyzeBtn').addEventListener('click',loadContext);$('refreshDataBtn').addEventListener('click',loadContext);$('locateBtn').addEventListener('click',()=>{if(!navigator.geolocation){toast('Geolocation is not available in this browser.','err');return;}navigator.geolocation.getCurrentPosition(pos=>{const center=[pos.coords.longitude,pos.coords.latitude];mapHome={center,zoom:16};map.flyTo({center,zoom:16});setMapStatus('Location found.','Your browser supplied the location.');toast('Map centred on your location.');},e=>toast('Location unavailable: '+e.message,'err'),{enableHighAccuracy:false,timeout:10000});});
     $('resetViewBtn').addEventListener('click',resetMap);$('zoomInBtn').addEventListener('click',()=>map?.zoomIn());$('zoomOutBtn').addEventListener('click',()=>map?.zoomOut());
-    ['showBuildings','show3d','showGreen','showTrees','showWater','showRoads','showShadow','showShadowLayer'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='show3d'&&mapReady)map.easeTo({pitch:$('show3d').checked?50:0,duration:350});applyLayerStates();computeSun();}));
+    ['showBuildings','show3d','showGreen','showTrees','showWater','showRoads','showShadow','showShadowLayer','showShadowProjection','showEnvelope'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='show3d'&&mapReady)map.easeTo({pitch:$('show3d').checked?50:0,duration:350});applyLayerStates();if(id==='showShadowProjection'&&$('showShadowProjection').checked)computeShadowProjection();computeSun();}));
     $('buildingOpacity').addEventListener('input',applyLayerStates);$('contextOpacity').addEventListener('input',applyLayerStates);$('buildingColorMode').addEventListener('change',applyLayerStates);$('minBuildingArea').addEventListener('input',applyLayerStates);
     $('basemapSelect').addEventListener('change',e=>{if(!mapReady)return;activeStyleUrl=e.target.value;map.setStyle(activeStyleUrl);map.once('style.load',()=>{if(!map.getSource('buildings-data'))addSourceLayer();updateDataSources();computeSun();});});
-    ['sunDate','sunTime','obstacleHeight'].forEach(id=>$(id).addEventListener('change',computeSun));$('drawBoundaryBtn').addEventListener('click',()=>{if(!drawing){drawPoints=[];toggleDrawing(true);}else toggleDrawing(false);});$('finishBoundaryBtn').addEventListener('click',finishBoundary);$('clearBoundaryBtn').addEventListener('click',clearBoundary);
+    ['sunDate','sunTime','obstacleHeight'].forEach(id=>$(id).addEventListener('change',computeSun));
+    // NEW: shadow projection checkbox change already handled above
+    $('computeSunHoursBtn').addEventListener('click',computeSunHours);
+    $('updateEnvelopeBtn').addEventListener('click',()=>{computeBuildableEnvelope();toast('Buildable envelope updated.');});
+    $('drawBoundaryBtn').addEventListener('click',()=>{if(!drawing){drawPoints=[];toggleDrawing(true);}else toggleDrawing(false);});$('finishBoundaryBtn').addEventListener('click',finishBoundary);$('clearBoundaryBtn').addEventListener('click',clearBoundary);
     $('saveBtn').addEventListener('click',saveLocal);$('saveLocalBtn').addEventListener('click',saveLocal);$('loadLocalBtn').addEventListener('click',()=>{try{const raw=localStorage.getItem(STORE_KEY);if(!raw)throw new Error('No local project has been saved in this browser.');applyProject(JSON.parse(raw),true);toast('Saved project restored.');}catch(e){toast(e.message,'err');}});
     $('exportBtn').addEventListener('click',()=>{switchPanel('projectPanel');toast('Choose an export format in the Project panel.');});$('exportPngBtn').addEventListener('click',exportPng);$('exportSvgBtn').addEventListener('click',exportSvg);$('exportGeoBtn').addEventListener('click',exportGeoJSON);$('exportBuildingsCsvBtn').addEventListener('click',exportBuildingsCsv);$('exportProjectBtn').addEventListener('click',exportProject);$('importProjectBtn').addEventListener('click',()=>$('importFile').click());
     $('importFile').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const p=JSON.parse(await f.text());applyProject(p,true);saveLocal();toast('Project file imported.');}catch(err){toast('Project import failed: '+err.message,'err');}finally{e.target.value='';}});$('clearDataBtn').addEventListener('click',clearData);
